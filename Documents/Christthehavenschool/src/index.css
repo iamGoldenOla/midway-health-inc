@@ -1,0 +1,353 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '@fontsource/playfair-display/400.css';
+@import '@fontsource/playfair-display/500.css';
+@import '@fontsource/playfair-display/600.css';
+@import '@fontsource/playfair-display/700.css';
+@import '@fontsource/dm-sans/400.css';
+@import '@fontsource/dm-sans/500.css';
+@import '@fontsource/dm-sans/600.css';
+@import '@fontsource/dm-sans/700.css';
+
+@layer base {
+  :root {
+    /* Primary - Deep Navy Blue */
+    --primary: 220 60% 20%;
+    --primary-foreground: 45 100% 96%;
+    
+    /* Secondary - Sky Blue */
+    --secondary: 199 89% 48%;
+    --secondary-foreground: 0 0% 100%;
+    
+    /* Accent Yellow */
+    --yellow: 45 100% 51%;
+    --yellow-light: 45 100% 70%;
+    --yellow-dark: 45 100% 42%;
+    
+<<<<<<< HEAD
+    /* Background & Surfaces */
+    --background: 45 30% 98%;
+=======
+    /* Background & Surfaces - Light Sky Blue tint */
+    --background: 199 50% 97%;
+>>>>>>> 98271f71a22a8faca0d2bd1b328d48a7f7b2bf44
+    --foreground: 220 40% 15%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 220 40% 15%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 40% 15%;
+    
+    /* Muted */
+    --muted: 220 20% 94%;
+    --muted-foreground: 220 15% 45%;
+    
+    /* Accent - Light Sky Blue */
+    --accent: 199 70% 94%;
+    --accent-foreground: 220 60% 20%;
+    
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Borders & Inputs */
+    --border: 220 20% 88%;
+    --input: 220 20% 88%;
+    --ring: 199 89% 48%;
+    
+    --radius: 0.75rem;
+    
+    /* Custom colors */
+    --navy: 220 60% 20%;
+    --navy-light: 220 45% 30%;
+    --sky: 199 89% 48%;
+    --sky-light: 199 80% 70%;
+    --sky-dark: 199 89% 38%;
+    --cream: 45 30% 96%;
+    --cream-dark: 45 20% 90%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(220 60% 20%) 0%, hsl(199 89% 48%) 100%);
+    --gradient-sky: linear-gradient(135deg, hsl(199 89% 48%) 0%, hsl(199 80% 60%) 100%);
+    --gradient-yellow: linear-gradient(135deg, hsl(45 100% 51%) 0%, hsl(45 100% 60%) 100%);
+    --gradient-hero-overlay: linear-gradient(to right, hsla(220, 60%, 15%, 0.85) 0%, hsla(220, 60%, 15%, 0.4) 60%, transparent 100%);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px -2px hsla(220, 60%, 20%, 0.08);
+    --shadow-md: 0 8px 24px -8px hsla(220, 60%, 20%, 0.12);
+    --shadow-lg: 0 16px 48px -12px hsla(220, 60%, 20%, 0.16);
+    --shadow-sky: 0 8px 24px -8px hsla(199, 89%, 48%, 0.3);
+    --shadow-yellow: 0 8px 24px -8px hsla(45, 100%, 51%, 0.3);
+    
+    /* Sidebar */
+    --sidebar-background: 220 60% 20%;
+    --sidebar-foreground: 45 100% 96%;
+    --sidebar-primary: 199 89% 48%;
+    --sidebar-primary-foreground: 220 60% 15%;
+    --sidebar-accent: 220 45% 28%;
+    --sidebar-accent-foreground: 45 100% 96%;
+    --sidebar-border: 220 45% 28%;
+    --sidebar-ring: 199 89% 48%;
+  }
+
+  .dark {
+    --primary: 42 87% 55%;
+    --primary-foreground: 220 60% 15%;
+    
+    --secondary: 220 45% 25%;
+    --secondary-foreground: 45 100% 96%;
+    
+    --yellow: 45 100% 51%;
+    --yellow-light: 45 100% 70%;
+    --yellow-dark: 45 100% 42%;
+    
+    --background: 220 50% 8%;
+    --foreground: 45 30% 95%;
+    
+    --card: 220 45% 12%;
+    --card-foreground: 45 30% 95%;
+    
+    --popover: 220 45% 12%;
+    --popover-foreground: 45 30% 95%;
+    
+    --muted: 220 40% 18%;
+    --muted-foreground: 220 15% 65%;
+    
+    --accent: 220 40% 20%;
+    --accent-foreground: 45 30% 95%;
+    
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 220 40% 20%;
+    --input: 220 40% 20%;
+    --ring: 199 89% 48%;
+    
+    --sidebar-background: 220 50% 6%;
+    --sidebar-foreground: 45 30% 95%;
+    --sidebar-primary: 199 89% 48%;
+    --sidebar-primary-foreground: 220 60% 15%;
+    --sidebar-accent: 220 40% 15%;
+    --sidebar-accent-foreground: 45 30% 95%;
+    --sidebar-border: 220 40% 18%;
+    --sidebar-ring: 199 89% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+<<<<<<< HEAD
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+=======
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+>>>>>>> 98271f71a22a8faca0d2bd1b328d48a7f7b2bf44
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-navy-light transition-all duration-300;
+  }
+  
+  .btn-sky {
+    @apply bg-sky text-secondary-foreground hover:bg-sky-dark transition-all duration-300 shadow-sky;
+  }
+  
+  .btn-yellow {
+    @apply bg-yellow text-primary hover:bg-yellow-dark transition-all duration-300 shadow-yellow;
+  }
+  
+  .section-padding {
+    @apply py-16 md:py-24 px-4 md:px-8;
+  }
+  
+  .container-custom {
+    @apply max-w-7xl mx-auto;
+  }
+  
+  .heading-display {
+    @apply font-serif text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight;
+  }
+  
+  .heading-section {
+    @apply font-serif text-3xl md:text-4xl font-bold;
+  }
+  
+  .text-body {
+    @apply font-sans text-base md:text-lg text-muted-foreground leading-relaxed;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+  
+  .sky-underline {
+    @apply relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-sky after:rounded-full;
+  }
+  
+  .yellow-underline {
+    @apply relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-yellow after:rounded-full;
+  }
+}
+
+@layer utilities {
+  .bg-navy {
+    background-color: hsl(var(--navy));
+  }
+  
+  .bg-navy-light {
+    background-color: hsl(var(--navy-light));
+  }
+  
+  .bg-sky {
+    background-color: hsl(var(--sky));
+  }
+  
+  .bg-sky-light {
+    background-color: hsl(var(--sky-light));
+  }
+  
+  .bg-yellow {
+    background-color: hsl(var(--yellow));
+  }
+  
+  .bg-yellow-light {
+    background-color: hsl(var(--yellow-light));
+  }
+  
+  .bg-cream {
+    background-color: hsl(var(--cream));
+  }
+  
+  .bg-cream-dark {
+    background-color: hsl(var(--cream-dark));
+  }
+  
+  .text-navy {
+    color: hsl(var(--navy));
+  }
+  
+  .text-sky {
+    color: hsl(var(--sky));
+  }
+  
+  .text-sky-dark {
+    color: hsl(var(--sky-dark));
+  }
+  
+  .text-yellow {
+    color: hsl(var(--yellow));
+  }
+  
+  .text-yellow-dark {
+    color: hsl(var(--yellow-dark));
+  }
+  
+  .border-sky {
+    border-color: hsl(var(--sky));
+  }
+  
+  .border-yellow {
+    border-color: hsl(var(--yellow));
+  }
+  
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .gradient-sky {
+    background: var(--gradient-sky);
+  }
+  
+  .gradient-yellow {
+    background: var(--gradient-yellow);
+  }
+  
+  .gradient-hero-overlay {
+    background: var(--gradient-hero-overlay);
+  }
+  
+  .shadow-card {
+    box-shadow: var(--shadow-md);
+  }
+  
+  .shadow-card-lg {
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .shadow-sky {
+    box-shadow: var(--shadow-sky);
+  }
+  
+  .shadow-yellow {
+    box-shadow: var(--shadow-yellow);
+  }
+  
+  .animate-fade-up {
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  
+  .animate-slide-left {
+    animation: slideLeft 0.8s ease-out forwards;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
