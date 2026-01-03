@@ -34,45 +34,32 @@ jobs:
         cd backend
         tar -czf backend-build.tar.gz -C . dist package.json package-lock.json src/database/schema.ts .env.example README.md DEPLOYMENT.md
 
-    - name: Upload to cPanel via FTP
+    - name: Prepare backend files for FTP deployment
+      run: |
+        cd backend
+        npm install --production
+        # Create .env file from secrets
+        echo "NODE_ENV=production" > .env
+        echo "PORT=${{ secrets.PORT }}" >> .env
+        echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+        echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
+        echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env
+        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+        echo "CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}" >> .env
+
+    - name: Deploy backend to cPanel via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         server: ${{ secrets.CPANEL_FTP_HOST }}
         username: ${{ secrets.CPANEL_FTP_USERNAME }}
         password: ${{ secrets.CPANEL_FTP_PASSWORD }}
         server-dir: ${{ secrets.CPANEL_BACKEND_PATH }}  # Path for backend files
-        local-dir: ./backend/backend-build.tar.gz
+        local-dir: ./backend/
+        exclude: ["node_modules/**", "src/**", "*.md", "*.env.example"]
 
-    - name: Extract and setup on server
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.CPANEL_SSH_HOST }}
-        username: ${{ secrets.CPANEL_SSH_USERNAME }}
-        key: ${{ secrets.CPANEL_SSH_PRIVATE_KEY }}
-        script: |
-          cd ${{ secrets.CPANEL_BACKEND_PATH }}
-          tar -xzf backend-build.tar.gz
-          rm backend-build.tar.gz
-          npm install --production
-          # Create .env file from secrets
-          echo "NODE_ENV=production" > .env
-          echo "PORT=${{ secrets.PORT }}" >> .env
-          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
-          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
-          echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-          echo "CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}" >> .env
-          # Install PM2 if not already installed
-          npm install -g pm2 || true
-          # Stop existing process if running
-          pm2 stop christthehavenschool-backend || true
-          pm2 delete christthehavenschool-backend || true
-          # Start application with PM2
-          pm2 start dist/index.js --name christthehavenschool-backend
-          pm2 save
-          # Set up PM2 startup script
-          pm2 startup || true
+
+
 
   deploy-frontend:
     runs-on: ubuntu-latest
