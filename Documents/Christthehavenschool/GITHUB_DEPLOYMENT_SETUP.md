@@ -28,16 +28,15 @@ To configure the deployment, you need to add the following secrets to your GitHu
 ### Required Secrets:
 
 #### cPanel Access Secrets:
-- `CPANEL_FTP_HOST` - Your FTP server hostname (e.g., yourdomain.com or IP address)
-- `CPANEL_FTP_USERNAME` - Your FTP username
-- `CPANEL_FTP_PASSWORD` - Your FTP password
+- `FTP_HOST` - Your FTP server hostname or IP address (e.g., 163.61.188.6)
+- `FTP_USERNAME` - Your FTP username (e.g., christt2)
+- `FTP_PASSWORD` - Your FTP password
 
 #### Deployment Path Secrets:
-- `CPANEL_BACKEND_PATH` - Server path for backend deployment (e.g., `/home/username/api/` or subdomain path)
-- `CPANEL_FRONTEND_PATH` - Server path for frontend deployment (e.g., `/home/username/public_html/`)
+- `FTP_DIR` - Server path for frontend deployment (e.g., `public_html/`)
+- For backend deployment, files will be placed in `/backend/` directory
 
 #### Backend Environment Secrets:
-- `PORT` - Port number for your backend (e.g., 3000)
 - `SUPABASE_URL` - Your Supabase project URL
 - `SUPABASE_ANON_KEY` - Your Supabase anon key
 - `SUPABASE_SERVICE_ROLE_KEY` - Your Supabase service role key (keep this secure!)
