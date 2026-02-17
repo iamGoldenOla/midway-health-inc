@@ -1,0 +1,287 @@
+import useSEO from "@/hooks/useSEO";
+import { useState } from "react";
+import Layout from "@/components/layout/Layout";
+import PageHero from "@/components/shared/PageHero";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Briefcase, MapPin, Clock, Upload, Send, Heart, Users, TrendingUp, Shield } from "lucide-react";
+import InspirationalMarquee from "@/components/shared/InspirationalMarquee";
+import { useToast } from "@/hooks/use-toast";
+import { jobApplicationsApi } from "@/services/api";
+import heroImg from "@/assets/midway_14.jpg";
+import parallaxImg from "@/assets/midway_6.jpg";
+
+const openPositions = [
+  { title: "Registered Nurse (RN)", type: "Full-Time", location: "Field / Home Visits", description: "Provide skilled nursing care to patients in their homes, including assessments, wound care, medication management, and patient education." },
+  { title: "Certified Home Health Aide (CHHA)", type: "Full-Time / Part-Time", location: "Field / Home Visits", description: "Assist patients with daily living activities, personal care, and basic health monitoring under the supervision of a nurse." },
+  { title: "Physical Therapist (PT)", type: "Full-Time", location: "Field / Home Visits", description: "Evaluate and treat patients to help restore movement, manage pain, and prevent disability through individualized home-based therapy." },
+  { title: "Occupational Therapist (OT)", type: "Part-Time", location: "Field / Home Visits", description: "Help patients develop, recover, and improve skills needed for daily living and working through therapeutic activities." },
+  { title: "Speech-Language Pathologist", type: "Per Diem", location: "Field / Home Visits", description: "Evaluate and treat patients with speech, language, cognitive, and swallowing disorders in a home setting." },
+  { title: "Care Coordinator", type: "Full-Time", location: "Office", description: "Coordinate patient care across services, manage schedules, communicate with families, and ensure seamless care delivery." },
+];
+
+const benefits = [
+  { icon: Heart, title: "Health Benefits", desc: "Comprehensive medical, dental, and vision coverage" },
+  { icon: TrendingUp, title: "Growth Opportunities", desc: "Ongoing training and career advancement programs" },
+  { icon: Clock, title: "Flexible Scheduling", desc: "Work-life balance with flexible hours" },
+  { icon: Shield, title: "Competitive Pay", desc: "Industry-leading compensation packages" },
+];
+
+const Careers = () => {
+  useSEO("Careers | Midway Health Inc.", "Join the Midway Health team. Browse open positions for nurses, therapists, home health aides, and care coordinators in Chicago.");
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [fileName, setFileName] = useState("");
+  const [selectedJob, setSelectedJob] = useState("");
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const validTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ];
+      if (!validTypes.includes(file.type)) {
+        toast({ title: "Invalid file type", description: "Please upload a PDF or Word document.", variant: "destructive" });
+        e.target.value = "";
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast({ title: "File too large", description: "Maximum file size is 5MB.", variant: "destructive" });
+        e.target.value = "";
+        return;
+      }
+      setFileName(file.name);
+      setResumeFile(file);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+
+    try {
+      // Upload resume to Supabase storage (if provided)
+      let resumePath = "";
+      if (resumeFile) {
+        try {
+          resumePath = await jobApplicationsApi.uploadResume(resumeFile);
+        } catch (uploadError: any) {
+          console.error("Resume upload failed:", uploadError);
+          // Continue without resume if upload fails due to network issues
+          toast({
+            title: "Resume Upload Failed",
+            description: "Continuing without resume. Network/proxy may be blocking upload. Try mobile hotspot or submit without file.",
+            variant: "destructive",
+          });
+        }
+      }
+
+      // Submit application to database
+      await jobApplicationsApi.submit({
+        name: formData.get("name") as string,
+        email: formData.get("email") as string,
+        phone: formData.get("phone") as string,
+        position: formData.get("position") as string,
+        resume_url: resumePath || null,
+        cover_letter: formData.get("cover_letter") as string || null,
+      });
+
+      toast({
+        title: "Application Submitted!",
+        description: resumePath
+          ? "Thank you for your interest. We'll review your application and get back to you soon."
+          : "Application received (resume upload failed - please email resume separately)."
+      });
+
+      setFileName("");
+      setSelectedJob("");
+      setResumeFile(null);
+      (e.target as HTMLFormElement).reset();
+    } catch (error: any) {
+      console.error("Failed to submit application:", error);
+      toast({
+        title: "Submission Failed",
+        description: error.message || "Network/proxy may be blocking connection. Try mobile hotspot or contact us directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Layout>
+      <PageHero image={heroImg} title="Join Our Team" subtitle="Start your journey as a caregiver — make a difference in people's lives every day." />
+
+      {/* Why Work With Us */}
+      <section className="py-20 lg:py-28">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-14">
+            <span className="text-warm text-sm font-semibold tracking-wider uppercase">Why Midway Health</span>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mt-3">A Rewarding Career in Healthcare</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {benefits.map((b) => (
+              <div key={b.title} className="bg-card rounded-2xl border border-border p-6 text-center shadow-card hover:shadow-elevated transition-shadow">
+                <div className="w-14 h-14 rounded-2xl bg-warm flex items-center justify-center mx-auto mb-4">
+                  <b.icon className="h-7 w-7 text-warm-foreground" />
+                </div>
+                <h3 className="font-display text-lg font-bold text-foreground mb-2">{b.title}</h3>
+                <p className="text-sm text-muted-foreground">{b.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Parallax Inspirational */}
+      <section
+        className="h-[300px] parallax-bg relative"
+        style={{ backgroundImage: `url(${parallaxImg})` }}
+      >
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+          <div className="text-center px-4">
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-secondary-foreground mb-4">
+              Make a <span className="text-warm">Difference</span> Every Day
+            </h2>
+            <p className="text-secondary-foreground/70 text-lg max-w-2xl mx-auto">
+              Join a team that believes in compassionate care, professional growth, and making a lasting impact in the lives of patients and families.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <InspirationalMarquee />
+
+      {/* Open Positions */}
+      <section className="py-20 lg:py-28 bg-muted">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-14">
+            <span className="text-warm text-sm font-semibold tracking-wider uppercase">Open Positions</span>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mt-3">Current Opportunities</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {openPositions.map((job) => (
+              <div key={job.title} className="bg-card rounded-2xl border border-border p-6 shadow-card hover:shadow-elevated transition-shadow">
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="font-display text-lg font-bold text-foreground">{job.title}</h3>
+                  <Briefcase className="h-5 w-5 text-warm shrink-0" />
+                </div>
+                <div className="flex flex-wrap gap-3 mb-3">
+                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                    <Clock className="h-3 w-3" /> {job.type}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                    <MapPin className="h-3 w-3" /> {job.location}
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">{job.description}</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-xl border-warm text-warm hover:bg-warm hover:text-warm-foreground"
+                  onClick={() => {
+                    setSelectedJob(job.title);
+                    document.getElementById("application-form")?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  Apply Now
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Application Form */}
+      <section id="application-form" className="py-20 lg:py-28">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <div className="text-center mb-10">
+            <span className="text-warm text-sm font-semibold tracking-wider uppercase">Apply Now</span>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mt-3">Submit Your Application</h2>
+          </div>
+
+          <form onSubmit={handleSubmit} className="bg-card rounded-2xl shadow-card border border-border p-8 space-y-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="text-sm font-medium text-foreground mb-1.5 block">Full Name *</label>
+                <Input name="name" required placeholder="John Doe" className="rounded-xl" maxLength={100} />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-foreground mb-1.5 block">Email *</label>
+                <Input name="email" required type="email" placeholder="john@example.com" className="rounded-xl" maxLength={255} />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="text-sm font-medium text-foreground mb-1.5 block">Phone *</label>
+                <Input name="phone" required type="tel" placeholder="(312) 298-9124" className="rounded-xl" maxLength={20} />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-foreground mb-1.5 block">Position *</label>
+                <select
+                  name="position"
+                  required
+                  value={selectedJob}
+                  onChange={(e) => setSelectedJob(e.target.value)}
+                  className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option value="">Select a position</option>
+                  {openPositions.map((job) => (
+                    <option key={job.title} value={job.title}>{job.title}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Resume Upload */}
+            <div>
+              <label className="text-sm font-medium text-foreground mb-1.5 block">Resume / CV (Optional - upload may fail due to network)</label>
+              <div className="relative border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-warm/50 transition-colors cursor-pointer">
+                <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground mb-2">
+                  {fileName ? (
+                    <span className="text-warm font-medium">{fileName}</span>
+                  ) : (
+                    "Click to upload or drag & drop (PDF, DOC, DOCX — max 5MB)"
+                  )}
+                </p>
+                <input
+                  type="file"
+                  name="resume"
+                  accept=".pdf,.doc,.docx"
+                  onChange={handleFileChange}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                If upload fails, you can email your resume to us separately
+              </p>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-foreground mb-1.5 block">Cover Letter / Message</label>
+              <Textarea name="cover_letter" placeholder="Tell us why you'd be a great fit..." className="rounded-xl min-h-[120px]" maxLength={2000} />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-warm text-warm-foreground border-0 rounded-xl shadow-soft hover:opacity-90 transition-opacity"
+            >
+              {loading ? "Submitting..." : <> Submit Application <Send className="ml-2 h-4 w-4" /></>}
+            </Button>
+          </form>
+        </div>
+      </section>
+    </Layout>
+  );
+};
+
+export default Careers;

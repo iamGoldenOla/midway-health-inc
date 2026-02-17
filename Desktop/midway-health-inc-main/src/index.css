@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 13%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 13%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 13%;
+
+    --primary: 174 100% 29%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 190 60% 20%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 180 15% 96%;
+    --muted-foreground: 200 10% 40%;
+
+    --accent: 174 80% 34%;
+    --accent-foreground: 0 0% 100%;
+
+    --warm: 24 95% 53%;
+    --warm-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 180 12% 90%;
+    --input: 180 12% 90%;
+    --ring: 174 100% 29%;
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 13%;
+    --sidebar-primary: 174 100% 29%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 180 15% 96%;
+    --sidebar-accent-foreground: 0 0% 13%;
+    --sidebar-border: 180 12% 90%;
+    --sidebar-ring: 174 100% 29%;
+
+    /* Custom tokens */
+    --gradient-primary: linear-gradient(135deg, hsl(174, 100%, 29%), hsl(174, 80%, 38%));
+    --gradient-hero: linear-gradient(135deg, hsl(190, 60%, 20%), hsl(174, 100%, 29%));
+    --gradient-warm: linear-gradient(135deg, hsl(24, 95%, 53%), hsl(32, 98%, 56%));
+    --gradient-navy: linear-gradient(135deg, hsl(190, 60%, 16%), hsl(190, 60%, 24%));
+    --shadow-soft: 0 4px 20px -4px hsl(174 100% 29% / 0.15);
+    --shadow-card: 0 8px 30px -8px hsl(0 0% 0% / 0.08);
+    --shadow-elevated: 0 20px 60px -15px hsl(0 0% 0% / 0.12);
+  }
+
+  .dark {
+    --background: 190 50% 8%;
+    --foreground: 0 0% 95%;
+    --card: 190 40% 12%;
+    --card-foreground: 0 0% 95%;
+    --popover: 190 40% 12%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 174 100% 29%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 190 60% 20%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 190 25% 18%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 174 80% 34%;
+    --accent-foreground: 0 0% 100%;
+    --warm: 24 85% 58%;
+    --warm-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 190 25% 22%;
+    --input: 190 25% 22%;
+    --ring: 174 100% 29%;
+    --sidebar-background: 190 40% 10%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 174 100% 29%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 190 25% 18%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 190 25% 22%;
+    --sidebar-ring: 174 100% 29%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+@layer utilities {
+
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .gradient-navy {
+    background: var(--gradient-navy);
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .text-gradient {
+    background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .parallax-bg {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Enable smooth horizontal scrolling on mobile */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
+  }
+}
