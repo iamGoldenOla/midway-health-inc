@@ -64,7 +64,7 @@ const ServiceCard = ({ service, index }: { service: typeof services[0]; index: n
       style={{ perspective: "1000px" }}
     >
       <div
-        className="relative w-full h-[340px] cursor-pointer"
+        className="relative w-full h-[260px] cursor-pointer"
         onClick={() => setIsFlipped(!isFlipped)}
         style={{ transformStyle: "preserve-3d" }}
       >
@@ -76,7 +76,7 @@ const ServiceCard = ({ service, index }: { service: typeof services[0]; index: n
         >
           {/* FRONT SIDE */}
           <div
-            className="absolute inset-0 bg-white rounded-2xl p-5 shadow-[0_2px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_40px_rgba(0,0,0,0.12)] transition-all duration-500"
+            className="absolute inset-0 bg-white rounded-xl p-4 shadow-[0_2px_15px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] transition-all duration-500 border border-secondary/10"
             style={{
               backfaceVisibility: "hidden",
               transform: "rotateY(0deg)"
@@ -84,46 +84,48 @@ const ServiceCard = ({ service, index }: { service: typeof services[0]; index: n
           >
             {/* Front Content */}
             <div className="relative z-10 h-full flex flex-col">
-              {/* Icon */}
-              <div className="mb-3">
-                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300">
-                  <Icon className="h-7 w-7 text-primary" strokeWidth={1.5} />
+              {/* Header: Icon + Title */}
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300 shrink-0">
+                  <Icon className="h-5 w-5 text-primary" strokeWidth={1.5} />
+                </div>
+
+                {/* Title with accent line moved here for compactness */}
+                <div className="text-right pl-3">
+                  <h3 className="font-display text-base font-bold text-primary uppercase tracking-wide leading-tight">
+                    {service.title}
+                  </h3>
+                  <div className="h-0.5 w-8 bg-warm ml-auto mt-1" />
                 </div>
               </div>
 
-              {/* Title with accent line */}
-              <div className="mb-2">
-                <h3 className="font-display text-lg font-bold text-primary uppercase tracking-wide mb-2 leading-tight">
-                  {service.title}
-                </h3>
-                <div className="h-0.5 w-12 bg-warm" />
-              </div>
-
               {/* Description */}
-              <p className="text-muted-foreground text-sm leading-relaxed mb-3 flex-1">
+              <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed mb-3 flex-1 line-clamp-4">
                 {service.desc}
               </p>
 
-              {/* Click to flip hint */}
-              <div className="text-xs text-muted-foreground/60 italic mb-3">
-                Click to see benefits →
-              </div>
+              {/* Footer: Hint + Button */}
+              <div className="mt-auto">
+                <div className="text-[10px] text-muted-foreground/60 italic mb-2 text-right">
+                  Benefits &rarr;
+                </div>
 
-              {/* CTA Button */}
-              <Link to={`/services/${service.slug}`} onClick={(e) => e.stopPropagation()}>
-                <Button
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-6 py-2.5 font-semibold text-sm shadow-md hover:shadow-lg transition-all duration-300 group/btn"
-                >
-                  <span>Explore service</span>
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
-                </Button>
-              </Link>
+                <Link to={`/services/${service.slug}`} onClick={(e) => e.stopPropagation()}>
+                  <Button
+                    size="sm"
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg h-9 font-semibold text-xs shadow-sm hover:shadow-md transition-all duration-300 group/btn"
+                  >
+                    <span>Explore</span>
+                    <ArrowRight className="ml-1.5 h-3.5 w-3.5 group-hover/btn:translate-x-1 transition-transform duration-300" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
 
           {/* BACK SIDE */}
           <div
-            className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 shadow-[0_8px_40px_rgba(0,0,0,0.12)]"
+            className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 rounded-xl p-5 shadow-[0_8px_30px_rgba(0,0,0,0.1)]"
             style={{
               backfaceVisibility: "hidden",
               transform: "rotateY(180deg)"
@@ -131,45 +133,39 @@ const ServiceCard = ({ service, index }: { service: typeof services[0]; index: n
           >
             {/* Back Content */}
             <div className="relative z-10 h-full flex flex-col text-white">
-              {/* Icon */}
-              <div className="mb-3">
-                <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center">
-                  <Icon className="h-7 w-7 text-white" strokeWidth={1.5} />
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                  <Icon className="h-4 w-4 text-white" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-bold leading-none">
+                    {service.title}
+                  </h3>
+                  <div className="h-0.5 w-6 bg-warm mt-1" />
                 </div>
               </div>
 
-              {/* Title */}
-              <h3 className="font-display text-xl font-bold mb-2 leading-tight">
-                {service.title}
-              </h3>
-              <div className="h-0.5 w-12 bg-warm mb-4" />
-
               {/* Benefits List */}
-              <div className="flex-1 mb-3">
-                <p className="text-sm font-semibold mb-2 text-white/90">Key Benefits:</p>
+              <div className="flex-1 mb-2">
                 <ul className="space-y-2">
                   {service.benefits.map((benefit, idx) => (
                     <li key={idx} className="flex items-start gap-2">
-                      <CheckCircle className="h-5 w-5 text-warm shrink-0 mt-0.5" />
-                      <span className="text-sm leading-relaxed">{benefit}</span>
+                      <CheckCircle className="h-3.5 w-3.5 text-warm shrink-0 mt-0.5" />
+                      <span className="text-xs leading-snug text-white/90">{benefit}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              {/* Click to flip back hint */}
-              <div className="text-xs text-white/70 italic mb-3">
-                Click to flip back
-              </div>
-
               {/* CTA Button */}
-              <Link to={`/services/${service.slug}`} onClick={(e) => e.stopPropagation()}>
+              <Link to={`/services/${service.slug}`} onClick={(e) => e.stopPropagation()} className="mt-auto">
                 <Button
                   variant="outline"
-                  className="w-full bg-white/10 border-2 border-white text-white hover:bg-white hover:text-primary rounded-lg px-6 py-2.5 font-semibold text-sm transition-all duration-300"
+                  size="sm"
+                  className="w-full bg-white/10 border border-white/40 text-white hover:bg-white hover:text-primary rounded-lg h-8 font-semibold text-xs transition-all duration-300"
                 >
                   <span>Learn More</span>
-                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
             </div>
