@@ -7,44 +7,46 @@ on:
       - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: ⬇ Checkout code
         uses: actions/checkout@v3
 
-      - name: 📂 Debug - Show repository structure
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "Repository contents:"
-          ls -la
-          echo "Looking for dist folder:"
-          find . -name "dist" -type d
+      - name: � Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'Desktop/midway-health-inc-main/package-lock.json'
 
-      - name: 📂 Check if dist folder exists
+      - name: � Install dependencies
+        run: npm ci
+        working-directory: Desktop/midway-health-inc-main
+
+      - name: 🏗 Build application
+        run: npm run build
+        working-directory: Desktop/midway-health-inc-main
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+      - name: 📂 Verify build output
         run: |
-          if [ -d "dist" ]; then
-            echo "✅ dist folder found at root level"
-            ls -la dist/
-          elif [ -d "Desktop/midway-health-inc-main/dist" ]; then
-            echo "⚠️ dist folder found at Desktop/midway-health-inc-main/dist"
-            echo "Moving to root..."
-            mv Desktop/midway-health-inc-main/dist ./dist
-            ls -la dist/
-          else
-            echo "❌ dist folder not found anywhere"
-            echo "Please ensure dist folder is at repository root"
+          if [ ! -d "Desktop/midway-health-inc-main/dist" ]; then
+            echo "Error: dist folder not created!"
             exit 1
           fi
+          echo "Build successful! dist folder contents:"
+          ls -la Desktop/midway-health-inc-main/dist/
 
-      - name: 🚀 Deploy to cPanel via FTP
+      - name: 🚀 Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.CPANEL_HOST }}
           username: ${{ secrets.CPANEL_USERNAME }}
           password: ${{ secrets.CPANEL_PASSWORD }}
           server-dir: public_html/
-          local-dir: dist/
+          local-dir: Desktop/midway-health-inc-main/dist/
 
