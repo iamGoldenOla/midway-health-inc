@@ -1,4 +1,5 @@
 name: 🚀 Deploy to cPanel
+# Force trigger build update
 
 on:
   workflow_dispatch:  # Manual trigger
