@@ -157,7 +157,7 @@ const AdminLogin = () => {
 
                 {/* Footer */}
                 <p className="text-center text-sm text-muted-foreground mt-6">
-                    © 2024 Midway Health Inc. All rights reserved.
+                    © 2026 Midway Health Inc. All rights reserved.
                 </p>
             </motion.div>
         </div>

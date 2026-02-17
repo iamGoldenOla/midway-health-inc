@@ -270,7 +270,7 @@ const Appointment = () => {
                                     <div className="text-sm text-muted-foreground">Quick Response</div>
                                 </div>
                                 <div>
-                                    <div className="text-3xl font-bold text-warm mb-1">500+</div>
+                                    <div className="text-3xl font-bold text-warm mb-1">150+</div>
                                     <div className="text-sm text-muted-foreground">Happy Patients</div>
                                 </div>
                                 <div>
@@ -337,10 +337,10 @@ const Appointment = () => {
                                             <div
                                                 key={i}
                                                 className={`aspect-square rounded-lg flex items-center justify-center text-sm transition-all ${day.isToday
-                                                        ? 'bg-primary text-primary-foreground font-bold shadow-md scale-110'
-                                                        : day.isAvailable && day.date > 0
-                                                            ? 'bg-background hover:bg-primary/10 cursor-pointer'
-                                                            : 'text-muted-foreground/30'
+                                                    ? 'bg-primary text-primary-foreground font-bold shadow-md scale-110'
+                                                    : day.isAvailable && day.date > 0
+                                                        ? 'bg-background hover:bg-primary/10 cursor-pointer'
+                                                        : 'text-muted-foreground/30'
                                                     }`}
                                             >
                                                 {day.date > 0 ? day.date : ''}
