@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import Counter from "@/components/shared/Counter";
 import aboutImg from "@/assets/midway_8.jpg";
 
 const highlights = [
@@ -28,7 +29,9 @@ const AboutPreview = () => {
               />
             </div>
             <div className="absolute -bottom-6 -right-6 bg-card rounded-2xl p-6 shadow-elevated border border-border max-w-[220px] hidden lg:block">
-              <div className="text-3xl font-bold text-primary font-display">15+</div>
+              <div className="text-3xl font-bold text-primary font-display">
+                <Counter value={5} suffix="+" />
+              </div>
               <div className="text-sm text-muted-foreground mt-1">Years of trusted healthcare service</div>
             </div>
           </div>

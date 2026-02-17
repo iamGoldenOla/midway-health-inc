@@ -1,6 +1,7 @@
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { Shield, Heart, Clock, Award, Users, Stethoscope } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Counter from "@/components/shared/Counter";
 import { useState, useEffect } from "react";
 
 const reasons = [
@@ -100,9 +101,9 @@ const WhyChooseUs = () => {
 
             <div className="flex flex-wrap gap-8 sm:gap-12">
               {[
-                { value: "500+", label: "Families Served" },
-                { value: "24/7", label: "Available Care" },
-                { value: "98%", label: "Satisfaction" },
+                { value: 100, label: "Families Served", suffix: "+" },
+                { value: 24, label: "Available Care", suffix: "/7" },
+                { value: 98, label: "Satisfaction", suffix: "%" },
               ].map((stat, i) => (
                 <motion.div
                   key={stat.label}
@@ -110,7 +111,9 @@ const WhyChooseUs = () => {
                   animate={isVisible ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.5 + i * 0.1, duration: 0.5 }}
                 >
-                  <p className="font-display text-3xl sm:text-4xl font-bold text-primary">{stat.value}</p>
+                  <p className="font-display text-3xl sm:text-4xl font-bold text-primary">
+                    <Counter value={stat.value} suffix={stat.suffix} />
+                  </p>
                   <p className="text-muted-foreground text-sm mt-1">{stat.label}</p>
                 </motion.div>
               ))}
@@ -188,19 +191,17 @@ const WhyChooseUs = () => {
                     }}
                   >
                     <div
-                      className={`w-full h-full rounded-full border-[2.5px] p-[3px] transition-all duration-500 ${
-                        isActive
-                          ? "border-primary shadow-[0_0_24px_hsl(174_100%_29%/0.3)]"
-                          : "border-white/60 shadow-elevated"
-                      }`}
+                      className={`w-full h-full rounded-full border-[2.5px] p-[3px] transition-all duration-500 ${isActive
+                        ? "border-primary shadow-[0_0_24px_hsl(174_100%_29%/0.3)]"
+                        : "border-white/60 shadow-elevated"
+                        }`}
                     >
                       <div className="relative w-full h-full rounded-full overflow-hidden">
                         <img
                           src={reason.image}
                           alt={reason.title}
-                          className={`w-full h-full object-cover transition-transform duration-700 ${
-                            isActive ? "scale-110" : "scale-100"
-                          }`}
+                          className={`w-full h-full object-cover transition-transform duration-700 ${isActive ? "scale-110" : "scale-100"
+                            }`}
                           loading="lazy"
                         />
                         <AnimatePresence>
@@ -224,9 +225,8 @@ const WhyChooseUs = () => {
 
                     {/* Small icon badge */}
                     <motion.div
-                      className={`absolute bottom-0 right-0 w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center shadow-md border-2 border-background z-10 transition-colors duration-300 ${
-                        isActive ? "bg-primary" : "bg-warm"
-                      }`}
+                      className={`absolute bottom-0 right-0 w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center shadow-md border-2 border-background z-10 transition-colors duration-300 ${isActive ? "bg-primary" : "bg-warm"
+                        }`}
                       initial={{ scale: 0 }}
                       animate={isVisible ? { scale: 1 } : {}}
                       transition={{ delay: 0.3 + i * 0.08, duration: 0.35, ease: "backOut" }}

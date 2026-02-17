@@ -13,6 +13,7 @@ import heroImg from "@/assets/midway_12.jpg";
 import parallaxImg from "@/assets/midway_3.jpg";
 import storyImg from "@/assets/midway_2.jpg";
 import teamImg from "@/assets/midway_5.jpg";
+import Counter from "@/components/shared/Counter";
 
 const values = [
   { icon: Heart, title: "Compassion", desc: "We treat every patient with empathy, kindness, and genuine care." },
@@ -86,12 +87,14 @@ const About = () => {
 
               <div className="flex flex-wrap gap-8 sm:gap-12">
                 {[
-                  { value: "5,000+", label: "Patients Served" },
-                  { value: "15+", label: "Years Experience" },
-                  { value: "98%", label: "Satisfaction Rate" },
+                  { value: 150, label: "Patients Served", suffix: "+" },
+                  { value: 5, label: "Years Experience", suffix: "+" },
+                  { value: 98, label: "Satisfaction Rate", suffix: "%" },
                 ].map((stat) => (
                   <div key={stat.label}>
-                    <div className="font-display text-3xl sm:text-4xl font-bold text-foreground">{stat.value}</div>
+                    <div className="font-display text-3xl sm:text-4xl font-bold text-foreground">
+                      <Counter value={stat.value} suffix={stat.suffix} />
+                    </div>
                     <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
                   </div>
                 ))}
@@ -152,12 +155,14 @@ const About = () => {
               </p>
               <div className="flex flex-wrap gap-4">
                 {[
-                  { label: "Licensed Professionals", value: "200+" },
-                  { label: "Years Experience", value: "15+" },
-                  { label: "Patient Satisfaction", value: "98%" },
+                  { label: "Care Professionals", value: 10, suffix: "+" },
+                  { label: "Years Experience", value: 5, suffix: "+" },
+                  { label: "Patient Satisfaction", value: 98, suffix: "%" },
                 ].map((stat) => (
                   <div key={stat.label} className="bg-muted rounded-xl px-5 py-3 border border-border">
-                    <div className="font-display text-xl font-bold text-warm">{stat.value}</div>
+                    <div className="font-display text-xl font-bold text-warm">
+                      <Counter value={stat.value} suffix={stat.suffix} />
+                    </div>
                     <div className="text-xs text-muted-foreground">{stat.label}</div>
                   </div>
                 ))}
@@ -183,13 +188,15 @@ const About = () => {
           <div className="text-center">
             <div className="flex justify-center gap-6 sm:gap-10 md:gap-16 flex-wrap px-4">
               {[
-                { value: "15+", label: "Years Experience" },
-                { value: "5,000+", label: "Patients Served" },
-                { value: "200+", label: "Care Professionals" },
-                { value: "98%", label: "Satisfaction Rate" },
+                { value: 5, label: "Years Experience", suffix: "+" },
+                { value: 150, label: "Patients Served", suffix: "+" },
+                { value: 10, label: "Care Professionals", suffix: "+" },
+                { value: 98, label: "Satisfaction Rate", suffix: "%" },
               ].map((s) => (
                 <div key={s.label}>
-                  <div className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-warm">{s.value}</div>
+                  <div className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-warm">
+                    <Counter value={s.value} suffix={s.suffix} />
+                  </div>
                   <div className="text-white/70 text-xs sm:text-sm mt-1">{s.label}</div>
                 </div>
               ))}
