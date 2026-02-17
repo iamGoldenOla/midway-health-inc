@@ -28,11 +28,11 @@ const AboutPreview = () => {
                 className="w-full h-[250px] sm:h-[320px] md:h-[400px] lg:h-[500px] object-cover"
               />
             </div>
-            <div className="absolute -bottom-6 -right-6 bg-card rounded-2xl p-6 shadow-elevated border border-border max-w-[220px] hidden lg:block">
-              <div className="text-3xl font-bold text-primary font-display">
+            <div className="absolute -bottom-4 sm:-bottom-6 -right-4 sm:-right-6 bg-card rounded-2xl p-4 sm:p-6 shadow-elevated border border-border max-w-[180px] sm:max-w-[220px]">
+              <div className="text-2xl sm:text-3xl font-bold text-primary font-display">
                 <Counter value={5} suffix="+" />
               </div>
-              <div className="text-sm text-muted-foreground mt-1">Years of trusted healthcare service</div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">Years of trusted healthcare service</div>
             </div>
           </div>
 

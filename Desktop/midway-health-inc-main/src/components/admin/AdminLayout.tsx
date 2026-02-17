@@ -13,8 +13,20 @@ import {
     Menu,
     X,
     Stethoscope,
+    Bell,
+    User,
+    Settings,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { authApi } from '@/services/api';
 
@@ -117,9 +129,78 @@ const AdminLayout = () => {
                 <header className="h-16 bg-card border-b border-border px-6 flex items-center justify-between sticky top-0 z-40">
                     <h2 className="text-xl font-semibold text-foreground">Admin Dashboard</h2>
                     <div className="flex items-center gap-4">
-                        <span className="text-sm text-muted-foreground">
-                            Midway Health Inc.
-                        </span>
+                        {/* Notification Bell */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="relative">
+                                    <Bell className="h-5 w-5" />
+                                    {/* Notification Badge */}
+                                    <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-80">
+                                <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <div className="max-h-[300px] overflow-y-auto">
+                                    <DropdownMenuItem className="flex flex-col items-start py-3">
+                                        <p className="font-medium text-sm">New Contact Message</p>
+                                        <p className="text-xs text-muted-foreground">John Doe sent a message</p>
+                                        <p className="text-xs text-muted-foreground mt-1">2 hours ago</p>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem className="flex flex-col items-start py-3">
+                                        <p className="font-medium text-sm">New Appointment Request</p>
+                                        <p className="text-xs text-muted-foreground">Sarah Johnson requested an appointment</p>
+                                        <p className="text-xs text-muted-foreground mt-1">5 hours ago</p>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem className="flex flex-col items-start py-3">
+                                        <p className="font-medium text-sm">New Job Application</p>
+                                        <p className="text-xs text-muted-foreground">Michael Brown applied for Nurse position</p>
+                                        <p className="text-xs text-muted-foreground mt-1">1 day ago</p>
+                                    </DropdownMenuItem>
+                                </div>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="text-center justify-center text-primary">
+                                    View All Notifications
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        {/* User Avatar Dropdown */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                                    <Avatar className="h-10 w-10">
+                                        <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+                                            A
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-56">
+                                <DropdownMenuLabel>
+                                    <div className="flex flex-col space-y-1">
+                                        <p className="text-sm font-medium">Admin User</p>
+                                        <p className="text-xs text-muted-foreground">admin@midwayhealthinc.com</p>
+                                    </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>
+                                    <User className="mr-2 h-4 w-4" />
+                                    <span>Profile</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <Settings className="mr-2 h-4 w-4" />
+                                    <span>Settings</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    <span>Logout</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </header>
 

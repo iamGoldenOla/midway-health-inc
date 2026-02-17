@@ -56,7 +56,7 @@ const Services = () => {
               {/* Left - Text Content */}
               <div className="text-center lg:text-left">
                 <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-14">
-                  Why Choose<br />Midway Health
+                  Why Choose<br />Midway Health Inc<span className="hidden sm:inline">.</span><span className="sm:hidden">.</span>
                 </h2>
 
                 <div className="space-y-10">
@@ -92,41 +92,35 @@ const Services = () => {
               </div>
 
               {/* Right - Enhanced Cascading Polaroid Fan (diagonal bottom-left to top-right) */}
-              <div className="relative h-[400px] sm:h-[500px] md:h-[580px] lg:h-[680px] px-4 md:px-8 lg:px-12">
-                {/* Mobile: Vertical Stack */}
-                <div className="md:hidden flex flex-col gap-4 items-center">
+              <div className="relative h-[400px] sm:h-[500px] md:h-[580px] lg:h-[680px] px-2 sm:px-4 md:px-8 lg:px-12">
+                {/* Mobile: Compact Grid */}
+                <div className="md:hidden grid grid-cols-2 gap-3 max-w-sm mx-auto">
                   {[
-                    { img: midway1, rotate: -3 },
+                    { img: midway1, rotate: -2 },
                     { img: midway2, rotate: 2 },
-                    { img: midway3, rotate: -2 },
-                    { img: midway4, rotate: 3 },
+                    { img: midway3, rotate: -1 },
+                    { img: midway4, rotate: 1 },
                   ].map((card, i) => (
                     <motion.div
                       key={i}
-                      initial={{ opacity: 0, y: 30, rotate: 0 }}
+                      initial={{ opacity: 0, y: 20, rotate: 0 }}
                       whileInView={{ opacity: 1, y: 0, rotate: card.rotate }}
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.1, duration: 0.5 }}
-                      whileHover={{
-                        scale: 1.05,
-                        rotate: 0,
-                        y: -8,
-                        transition: { duration: 0.3 }
-                      }}
-                      className="w-64 cursor-pointer"
+                      className="w-full"
                       style={{
                         transformStyle: "preserve-3d",
                       }}
                     >
-                      <div className="bg-white rounded-2xl p-3 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_20px_60px_rgb(0,0,0,0.3)] transition-shadow duration-300">
+                      <div className="bg-white rounded-xl p-2 shadow-[0_4px_20px_rgb(0,0,0,0.12)] transition-shadow duration-300">
                         <img
                           src={card.img}
                           alt="Midway Health care"
-                          className="w-full h-48 object-cover rounded-xl"
+                          className="w-full h-32 object-cover rounded-lg"
                           loading="lazy"
                         />
-                        <div className="py-3 px-2">
-                          <div className="h-2 w-16 bg-gray-300 rounded-full" />
+                        <div className="py-2 px-1">
+                          <div className="h-1.5 w-10 bg-gray-300 rounded-full" />
                         </div>
                       </div>
                     </motion.div>
