@@ -1,12 +1,10 @@
 name: 🚀 Deploy to cPanel
 
 on:
-  workflow_dispatch:  # Manual trigger only
+  workflow_dispatch:  # Manual trigger
   push:
     branches:
       - main
-    paths:
-      - 'dist/**'  # Only deploy when dist folder changes
 
 jobs:
   deploy:
@@ -16,15 +14,28 @@ jobs:
       - name: ⬇ Checkout code
         uses: actions/checkout@v3
 
+      - name: 📂 Debug - Show repository structure
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Repository contents:"
+          ls -la
+          echo "Looking for dist folder:"
+          find . -name "dist" -type d
+
       - name: 📂 Check if dist folder exists
         run: |
           if [ -d "dist" ]; then
-            echo "✅ dist folder found, proceeding with deployment"
+            echo "✅ dist folder found at root level"
+            ls -la dist/
+          elif [ -d "Desktop/midway-health-inc-main/dist" ]; then
+            echo "⚠️ dist folder found at Desktop/midway-health-inc-main/dist"
+            echo "Moving to root..."
+            mv Desktop/midway-health-inc-main/dist ./dist
             ls -la dist/
           else
-            echo "❌ dist folder not found. Please build locally and commit the dist folder."
-            echo "Run: npm run build"
-            echo "Then: git add dist && git commit -m 'build: Add production build' && git push"
+            echo "❌ dist folder not found anywhere"
+            echo "Please ensure dist folder is at repository root"
             exit 1
           fi
 
@@ -36,4 +47,4 @@ jobs:
           password: ${{ secrets.CPANEL_PASSWORD }}
           server-dir: public_html/
           local-dir: dist/
-          dangerous-clean-slate: false
+
