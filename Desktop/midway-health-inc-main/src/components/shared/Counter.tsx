@@ -27,7 +27,7 @@ const Counter = ({
         stiffness: 100,
         duration: duration * 1000,
     });
-    const isInView = useInView(ref, { once: true, margin: "-100px" });
+    const isInView = useInView(ref, { once: true, margin: "0px" });
 
     useEffect(() => {
         if (isInView) {

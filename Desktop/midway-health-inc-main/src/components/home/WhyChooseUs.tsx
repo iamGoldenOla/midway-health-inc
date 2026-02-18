@@ -8,32 +8,32 @@ const reasons = [
   {
     icon: Shield,
     title: "Certified Experts",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&crop=face",
+    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&crop=face&q=70&fm=webp",
   },
   {
     icon: Heart,
     title: "Personalized Care",
-    image: "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=300&h=300&fit=crop&crop=face",
+    image: "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=300&h=300&fit=crop&crop=face&q=70&fm=webp",
   },
   {
     icon: Clock,
     title: "24/7 Available",
-    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=300&h=300&fit=crop&crop=face",
+    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=300&h=300&fit=crop&crop=face&q=70&fm=webp",
   },
   {
     icon: Award,
     title: "Trusted Care",
-    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&h=300&fit=crop&crop=face",
+    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&h=300&fit=crop&crop=face&q=70&fm=webp",
   },
   {
     icon: Users,
     title: "Family Focused",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=300&fit=crop&crop=face",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=300&fit=crop&crop=face&q=70&fm=webp",
   },
   {
     icon: Stethoscope,
     title: "Clinical Excellence",
-    image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=300&h=300&fit=crop&crop=face",
+    image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=300&h=300&fit=crop&crop=face&q=70&fm=webp",
   },
 ];
 

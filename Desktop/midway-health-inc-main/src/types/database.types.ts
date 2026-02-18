@@ -18,7 +18,16 @@ export interface Database {
                     title: string
                     slug: string
                     content: string
+                    excerpt: string | null
+                    featured_image: string | null
                     featured_image_url: string | null
+                    category: string | null
+                    tags: string[] | null
+                    published: boolean
+                    meta_title: string | null
+                    meta_description: string | null
+                    og_image: string | null
+                    focus_keyword: string | null
                     created_at: string
                     updated_at: string
                 }
@@ -26,8 +35,17 @@ export interface Database {
                     id?: string
                     title: string
                     slug: string
-                    content: string
+                    content?: string
+                    excerpt?: string | null
+                    featured_image?: string | null
                     featured_image_url?: string | null
+                    category?: string | null
+                    tags?: string[] | null
+                    published?: boolean
+                    meta_title?: string | null
+                    meta_description?: string | null
+                    og_image?: string | null
+                    focus_keyword?: string | null
                     created_at?: string
                     updated_at?: string
                 }
@@ -36,7 +54,16 @@ export interface Database {
                     title?: string
                     slug?: string
                     content?: string
+                    excerpt?: string | null
+                    featured_image?: string | null
                     featured_image_url?: string | null
+                    category?: string | null
+                    tags?: string[] | null
+                    published?: boolean
+                    meta_title?: string | null
+                    meta_description?: string | null
+                    og_image?: string | null
+                    focus_keyword?: string | null
                     created_at?: string
                     updated_at?: string
                 }
@@ -48,6 +75,8 @@ export interface Database {
                     slug: string
                     description: string
                     icon: string | null
+                    image: string | null
+                    features: string[] | null
                     created_at: string
                     updated_at: string
                 }
@@ -57,6 +86,8 @@ export interface Database {
                     slug: string
                     description: string
                     icon?: string | null
+                    image?: string | null
+                    features?: string[] | null
                     created_at?: string
                     updated_at?: string
                 }
@@ -66,10 +97,13 @@ export interface Database {
                     slug?: string
                     description?: string
                     icon?: string | null
+                    image?: string | null
+                    features?: string[] | null
                     created_at?: string
                     updated_at?: string
                 }
             }
+
             contact_messages: {
                 Row: {
                     id: string
