@@ -41,7 +41,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     }
 
     if (!session) {
-        return <Navigate to="/admin/login" replace />;
+        return <Navigate to="/mwh-secure-portal-2026" replace />;
     }
 
     return <>{children}</>;

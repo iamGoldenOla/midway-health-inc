@@ -107,9 +107,7 @@ const Footer = () => {
             <Link to="/consent-form" className="text-xs text-secondary-foreground/50 hover:text-warm transition-colors">
               Consent Form
             </Link>
-            <Link to="/admin/login" className="text-xs text-secondary-foreground/50 hover:text-warm transition-colors">
-              Admin
-            </Link>
+
           </div>
           <p className="text-xs text-secondary-foreground/40">
             Built by Trendtactics Digital

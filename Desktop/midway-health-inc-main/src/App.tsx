@@ -42,10 +42,10 @@ const App = () => (
           <Route path="/consultation" element={<Consultation />} />
           <Route path="/appointment" element={<Appointment />} />
 
-          {/* Admin Routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
+          {/* Admin Routes — URLs are intentionally obfuscated, do not share publicly */}
+          <Route path="/mwh-secure-portal-2026" element={<AdminLogin />} />
           <Route
-            path="/admin"
+            path="/mwh-dashboard-2026"
             element={
               <ProtectedRoute>
                 <AdminDashboard />

@@ -47,7 +47,7 @@ const AdminLogin = () => {
                 title: 'Login Successful',
                 description: 'Welcome to the admin dashboard',
             });
-            navigate('/admin');
+            navigate('/mwh-dashboard-2026');
         } catch (error: any) {
             toast({
                 title: 'Login Failed',

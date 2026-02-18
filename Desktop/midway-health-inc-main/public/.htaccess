@@ -1,8 +1,71 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # ── Block the old /admin paths entirely (return 404 to avoid hinting they exist)
+  RewriteRule ^admin(/.*)?$ - [R=404,L]
+
+  # ── SPA fallback (must come after the admin block)
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
+</IfModule>
+
+# ── Security Headers ──────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+  # Prevent clickjacking (no iframes from other origins)
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # Prevent MIME type sniffing
+  Header always set X-Content-Type-Options "nosniff"
+
+  # Enable XSS protection in older browsers
+  Header always set X-XSS-Protection "1; mode=block"
+
+  # Enforce HTTPS for 1 year (enable once SSL is confirmed working)
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+  # Control referrer information
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Restrict browser features
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+
+  # Content Security Policy — allows Supabase, Unsplash, Google Fonts
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-ancestors 'none';"
+
+  # Remove server information
+  Header unset Server
+  Header unset X-Powered-By
+</IfModule>
+
+# ── Disable directory listing ─────────────────────────────────────────────────
+Options -Indexes
+
+# ── Block common attack patterns ──────────────────────────────────────────────
+<IfModule mod_rewrite.c>
+  # Block SQL injection attempts in query strings
+  RewriteCond %{QUERY_STRING} (union|select|insert|drop|delete|update|cast|create|char|convert|alter|declare|script|set|md5|benchmark) [NC]
+  RewriteRule .* - [F,L]
+
+  # Block script injection in query strings
+  RewriteCond %{QUERY_STRING} (<|%3C).*script.*(>|%3E) [NC]
+  RewriteRule .* - [F,L]
+
+  # Block base64 encoded attacks
+  RewriteCond %{QUERY_STRING} base64_encode[^(]*\([^)]*\) [NC]
+  RewriteRule .* - [F,L]
+</IfModule>
+
+# ── Cache static assets ───────────────────────────────────────────────────────
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType application/json "access plus 0 seconds"
 </IfModule>

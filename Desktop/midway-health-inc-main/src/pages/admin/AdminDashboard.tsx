@@ -177,7 +177,7 @@ const AdminDashboard = () => {
   const handleSignOut = async () => {
     try {
       await authApi.signOut();
-      navigate("/admin/login");
+      navigate("/mwh-secure-portal-2026");
     } catch {
       toast({ title: "Error signing out", variant: "destructive" });
     }
