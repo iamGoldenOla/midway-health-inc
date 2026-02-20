@@ -261,6 +261,73 @@ export interface Database {
                     created_at?: string
                 }
             }
+            events: {
+                Row: {
+                    id: string
+                    title: string
+                    description: string | null
+                    event_date: string
+                    event_time: string | null
+                    location: string | null
+                    image_url: string | null
+                    is_published: boolean
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    title: string
+                    description?: string | null
+                    event_date: string
+                    event_time?: string | null
+                    location?: string | null
+                    image_url?: string | null
+                    is_published?: boolean
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    title?: string
+                    description?: string | null
+                    event_date?: string
+                    event_time?: string | null
+                    location?: string | null
+                    image_url?: string | null
+                    is_published?: boolean
+                    created_at?: string
+                    updated_at?: string
+                }
+            }
+            blog_comments: {
+                Row: {
+                    id: string
+                    post_slug: string
+                    name: string
+                    email?: string | null
+                    comment: string
+                    approved: boolean
+                    created_at: string
+                }
+                Insert: {
+                    id?: string
+                    post_slug: string
+                    name: string
+                    email?: string | null
+                    comment: string
+                    approved?: boolean
+                    created_at?: string
+                }
+                Update: {
+                    id?: string
+                    post_slug?: string
+                    name?: string
+                    email?: string | null
+                    comment?: string
+                    approved?: boolean
+                    created_at?: string
+                }
+            }
         }
     }
 }

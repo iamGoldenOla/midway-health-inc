@@ -1,0 +1,20 @@
+<svg width="600" height="120" viewBox="0 0 600 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Icon Container -->
+    <circle cx="60" cy="60" r="45" stroke="#009494" stroke-width="3" fill="none" />
+    
+    <!-- Pulse Line (Orange) -->
+    <path d="M25 60 H 45 L 52 40 L 60 90 L 68 30 L 76 60 H 95" 
+          stroke="#F9812A" 
+          stroke-width="4" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" />
+    
+    <!-- Text -->
+    <!-- MIDWAY in Teal (#009494), HEALTH in Orange (#F9812A) -->
+    <text x="120" y="75" font-family="Arial, sans-serif" font-weight="bold" font-size="52" fill="#009494" letter-spacing="-1">
+        MIDWAY <tspan fill="#F9812A" dx="5">HEALTH</tspan>
+    </text>
+    
+    <!-- INC. in Gray, positioned relative to the rest -->
+    <text x="545" y="55" font-family="Arial, sans-serif" font-size="14" fill="#666" font-weight="normal">INC.</text>
+</svg>

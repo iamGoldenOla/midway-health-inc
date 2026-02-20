@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import PageHero from "@/components/shared/PageHero";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Calendar, ArrowRight, Search, User } from "lucide-react";
+import { Calendar, Search, User } from "lucide-react";
 import { blogPosts } from "@/data/blogPosts";
 import NewsletterSubscribe from "@/components/shared/NewsletterSubscribe";
+import BlogAdBanner from "@/components/shared/BlogAdBanner";
 import heroImg from "@/assets/blog-hero.jpg";
 
 const categories = ["All", ...Array.from(new Set(blogPosts.map((p) => p.category)))];
@@ -48,16 +48,15 @@ const Blog = () => {
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2 mb-10">
+              <div className="flex overflow-x-auto pb-2 gap-2 mb-10 no-scrollbar mask-gradient-right">
                 {categories.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                      activeCategory === cat
-                        ? "bg-warm text-warm-foreground"
-                        : "bg-muted text-muted-foreground hover:bg-muted/80"
-                    }`}
+                    className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors shrink-0 ${activeCategory === cat
+                      ? "bg-warm text-warm-foreground shadow-sm"
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                      }`}
                   >
                     {cat}
                   </button>
@@ -114,13 +113,8 @@ const Blog = () => {
 
             {/* Sidebar */}
             <aside className="space-y-8">
-              {/* Ad Space */}
-              <div className="bg-muted rounded-2xl border border-border p-6 text-center">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3">Advertisement</p>
-                <div className="bg-border/50 rounded-xl h-64 flex items-center justify-center">
-                  <span className="text-muted-foreground text-sm">Ad Space Available</span>
-                </div>
-              </div>
+              {/* Ad Banner */}
+              <BlogAdBanner size="tall" />
 
               {/* Newsletter */}
               <NewsletterSubscribe />
@@ -143,13 +137,8 @@ const Blog = () => {
                 </div>
               </div>
 
-              {/* Ad Space 2 */}
-              <div className="bg-muted rounded-2xl border border-border p-6 text-center">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3">Advertisement</p>
-                <div className="bg-border/50 rounded-xl h-48 flex items-center justify-center">
-                  <span className="text-muted-foreground text-sm">Ad Space Available</span>
-                </div>
-              </div>
+              {/* Ad Banner 2 */}
+              <BlogAdBanner size="medium" />
             </aside>
           </div>
         </div>

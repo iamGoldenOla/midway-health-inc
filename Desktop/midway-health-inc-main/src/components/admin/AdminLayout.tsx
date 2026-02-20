@@ -69,13 +69,14 @@ const AdminLayout = () => {
             <motion.aside
                 initial={false}
                 animate={{ width: sidebarOpen ? 280 : 80 }}
-                className="fixed left-0 top-0 h-screen bg-card border-r border-border z-50"
+                animate={{ width: sidebarOpen ? 280 : 80 }}
+                className="fixed left-0 top-0 h-screen bg-primary border-r border-border z-50 text-primary-foreground"
             >
                 <div className="flex flex-col h-full">
                     {/* Header */}
-                    <div className="h-16 flex items-center justify-between px-4 border-b border-border">
+                    <div className="h-16 flex items-center justify-between px-4 border-b border-white/10">
                         {sidebarOpen && (
-                            <h1 className="font-bold text-lg text-foreground">Midway Admin</h1>
+                            <img src="/src/assets/MIDWAY_LOGO_LIGHT.png" alt="Midway Admin" className="h-10 w-auto object-contain" />
                         )}
                         <Button
                             variant="ghost"

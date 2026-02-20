@@ -69,8 +69,8 @@ const AdminLogin = () => {
             >
                 {/* Logo/Header */}
                 <div className="text-center mb-8">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
-                        <Shield className="h-8 w-8 text-primary" />
+                    <div className="w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                        <img src="/src/assets/MIDWAY_HEALTH_INC_LOGO_TRANSPARENT.png" alt="Midway Health Inc." className="h-full w-full object-contain" />
                     </div>
                     <h1 className="text-3xl font-bold text-foreground mb-2">Admin Portal</h1>
                     <p className="text-muted-foreground">Midway Health Inc.</p>

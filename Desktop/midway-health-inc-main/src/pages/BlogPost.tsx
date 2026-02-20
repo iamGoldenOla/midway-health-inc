@@ -4,29 +4,42 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Calendar, User, Clock, MessageCircle, Share2, Heart, Tag, ChevronRight } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, MessageCircle, Share2, Heart, Tag, ChevronRight, CheckCircle } from "lucide-react";
 import { blogPosts } from "@/data/blogPosts";
 import NewsletterSubscribe from "@/components/shared/NewsletterSubscribe";
+import BlogAdBanner from "@/components/shared/BlogAdBanner";
 import { useToast } from "@/hooks/use-toast";
+import { commentsApi } from "@/services/api";
 
 interface Comment {
-  id: number;
+  id: string;
   name: string;
-  date: string;
-  text: string;
+  created_at: string;
+  comment: string;
 }
 
 const BlogPost = () => {
   const { slug } = useParams();
   const post = blogPosts.find((p) => p.slug === slug);
   const { toast } = useToast();
-  const [comments, setComments] = useState<Comment[]>([
-    { id: 1, name: "Mary Johnson", date: "Feb 6, 2026", text: "This was incredibly helpful! My mother is recovering from hip surgery and these tips made the transition home much smoother. Thank you!" },
-    { id: 2, name: "David Chen", date: "Feb 7, 2026", text: "Great article. I especially appreciated the section on when to seek additional help. It's not always obvious when things are going wrong." },
-  ]);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState(true);
+  const [commentSubmitted, setCommentSubmitted] = useState(false);
+  const [commentSubmitting, setCommentSubmitting] = useState(false);
   const [commentName, setCommentName] = useState("");
   const [commentEmail, setCommentEmail] = useState("");
   const [commentText, setCommentText] = useState("");
+  const [honeypot, setHoneypot] = useState(""); // spam trap
+
+  // Load real comments from Supabase
+  useEffect(() => {
+    if (slug) {
+      commentsApi.getBySlug(slug)
+        .then((data) => setComments((data ?? []) as Comment[]))
+        .catch(console.error)
+        .finally(() => setCommentsLoading(false));
+    }
+  }, [slug]);
 
   // Dynamic page title for SEO
   useEffect(() => {
@@ -53,20 +66,29 @@ const BlogPost = () => {
 
   const relatedPosts = blogPosts.filter((p) => p.slug !== slug).slice(0, 3);
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
+  const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!commentName.trim() || !commentText.trim()) return;
-    const newComment: Comment = {
-      id: Date.now(),
-      name: commentName.trim(),
-      date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-      text: commentText.trim(),
-    };
-    setComments((prev) => [...prev, newComment]);
-    setCommentName("");
-    setCommentEmail("");
-    setCommentText("");
-    toast({ title: "Comment posted!", description: "Thank you for sharing your thoughts." });
+    // Honeypot check — bots fill this, humans don't
+    if (honeypot) return;
+    if (!commentName.trim() || !commentText.trim() || !slug) return;
+    setCommentSubmitting(true);
+    try {
+      await commentsApi.create({
+        post_slug: slug,
+        name: commentName.trim(),
+        email: commentEmail.trim() || undefined,
+        comment: commentText.trim(),
+      });
+      setCommentName("");
+      setCommentEmail("");
+      setCommentText("");
+      setCommentSubmitted(true);
+      toast({ title: "Comment submitted!", description: "Your comment is awaiting moderation and will appear shortly." });
+    } catch (err: any) {
+      toast({ title: "Error submitting comment", description: err.message, variant: "destructive" });
+    } finally {
+      setCommentSubmitting(false);
+    }
   };
 
   // Generate JSON-LD structured data
@@ -325,13 +347,8 @@ const BlogPost = () => {
 
             {/* Sidebar */}
             <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start">
-              {/* Ad Space */}
-              <div className="bg-muted/50 rounded-2xl border border-border p-6 text-center">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3 font-semibold">Advertisement</p>
-                <div className="bg-border/30 rounded-xl h-64 flex items-center justify-center">
-                  <span className="text-muted-foreground text-sm">Ad Space Available</span>
-                </div>
-              </div>
+              {/* Ad Banner */}
+              <BlogAdBanner size="tall" />
 
               <NewsletterSubscribe />
 
@@ -374,13 +391,8 @@ const BlogPost = () => {
                 </div>
               </div>
 
-              {/* Ad Space 2 */}
-              <div className="bg-muted/50 rounded-2xl border border-border p-6 text-center">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3 font-semibold">Advertisement</p>
-                <div className="bg-border/30 rounded-xl h-48 flex items-center justify-center">
-                  <span className="text-muted-foreground text-sm">Ad Space Available</span>
-                </div>
-              </div>
+              {/* Ad Banner 2 */}
+              <BlogAdBanner size="medium" />
             </aside>
           </div>
         </div>

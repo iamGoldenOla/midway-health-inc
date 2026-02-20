@@ -105,6 +105,7 @@ const Consultation = () => {
   const [submitted, setSubmitted] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [honeypot, setHoneypot] = useState(""); // Spam protection
 
   const form = useForm<ConsultationFormData>({
     resolver: zodResolver(consultationSchema),
@@ -121,6 +122,7 @@ const Consultation = () => {
   });
 
   const onSubmit = async (data: ConsultationFormData) => {
+    if (honeypot) return; // Silent rejection for bots
     try {
       setIsSubmitting(true);
 
@@ -311,6 +313,16 @@ const Consultation = () => {
 
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                  {/* Honeypot field - invisible to humans */}
+                  <input
+                    type="text"
+                    name="website"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    style={{ display: "none" }}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
                   {/* Section 1 */}
                   <motion.div
                     className="bg-card rounded-2xl shadow-card border border-border overflow-hidden"

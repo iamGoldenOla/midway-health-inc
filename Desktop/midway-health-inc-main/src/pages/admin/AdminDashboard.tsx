@@ -5,6 +5,7 @@ import {
   FileText,
   Briefcase,
   MessageSquare,
+  MessageCircle,
   Calendar,
   Mail,
   Users,
@@ -21,6 +22,7 @@ import {
   Trash2,
   X,
   LogOut,
+  CheckCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,7 +36,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { authApi, blogApi, servicesApi, contactApi, consultationsApi, appointmentsApi, jobApplicationsApi, newsletterApi } from "@/services/api";
+import { authApi, blogApi, servicesApi, contactApi, consultationsApi, appointmentsApi, jobApplicationsApi, newsletterApi, eventsApi, commentsApi } from "@/services/api";
 import { useNavigate } from "react-router-dom";
 
 type Section =
@@ -45,7 +47,9 @@ type Section =
   | "consultations"
   | "appointments"
   | "newsletters"
-  | "careers";
+  | "careers"
+  | "events"
+  | "comments";
 
 const sidebarItems: { id: Section; label: string; icon: React.ElementType }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
@@ -54,6 +58,8 @@ const sidebarItems: { id: Section; label: string; icon: React.ElementType }[] = 
   { id: "appointments", label: "Appointments", icon: Calendar },
   { id: "blog", label: "Blog Posts", icon: FileText },
   { id: "services", label: "Services", icon: Briefcase },
+  { id: "events", label: "Events", icon: Calendar },
+  { id: "comments", label: "Comments", icon: MessageCircle },
   { id: "newsletters", label: "Newsletters", icon: Mail },
   { id: "careers", label: "Job Applications", icon: Users },
 ];
@@ -105,6 +111,17 @@ const emptyServiceForm = {
   features: "",
 };
 
+// ─── Event Form ───────────────────────────────────────────────────────────────
+const emptyEventForm = {
+  title: "",
+  description: "",
+  event_date: "",
+  event_time: "",
+  location: "",
+  image_url: "",
+  is_published: false,
+};
+
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -134,6 +151,14 @@ const AdminDashboard = () => {
   const [services, setServices] = useState<any[]>([]);
   const [newsletters, setNewsletters] = useState<any[]>([]);
   const [jobApplications, setJobApplications] = useState<any[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
+  const [comments, setComments] = useState<any[]>([]);
+
+  // Event state
+  const [eventFormOpen, setEventFormOpen] = useState(false);
+  const [eventForm, setEventForm] = useState({ ...emptyEventForm });
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [eventSaving, setEventSaving] = useState(false);
 
   useEffect(() => {
     loadAllData();
@@ -142,15 +167,7 @@ const AdminDashboard = () => {
   const loadAllData = async () => {
     try {
       setLoading(true);
-      const [
-        consultationsData,
-        contactsData,
-        appointmentsData,
-        blogData,
-        servicesData,
-        newslettersData,
-        jobsData,
-      ] = await Promise.all([
+      const results = await Promise.allSettled([
         consultationsApi.getAll(),
         contactApi.getAll(),
         appointmentsApi.getAll(),
@@ -158,17 +175,43 @@ const AdminDashboard = () => {
         servicesApi.getAll(),
         newsletterApi.getAll(),
         jobApplicationsApi.getAll(),
+        eventsApi.getAll(),
+        commentsApi.getAll(),
       ]);
 
-      setConsultations(consultationsData);
-      setContacts(contactsData);
-      setAppointments(appointmentsData);
-      setBlogPosts(blogData);
-      setServices(servicesData);
-      setNewsletters(newslettersData);
-      setJobApplications(jobsData);
+      const [
+        consultationsRes,
+        contactsRes,
+        appointmentsRes,
+        blogRes,
+        servicesRes,
+        newslettersRes,
+        jobsRes,
+        eventsRes,
+        commentsRes,
+      ] = results;
+
+      // Helper to extract data or default to empty array
+      const getData = (res: PromiseSettledResult<any>, name: string) => {
+        if (res.status === "fulfilled") return res.value;
+        console.error(`Failed to load ${name}:`, res.reason);
+        // Optional: toast error for critical failures if needed, or just suppress
+        return [];
+      };
+
+      setConsultations(getData(consultationsRes, "consultations"));
+      setContacts(getData(contactsRes, "contacts"));
+      setAppointments(getData(appointmentsRes, "appointments"));
+      setBlogPosts(getData(blogRes, "blog"));
+      setServices(getData(servicesRes, "services"));
+      setNewsletters(getData(newslettersRes, "newsletters"));
+      setJobApplications(getData(jobsRes, "jobs"));
+      setEvents(getData(eventsRes, "events"));
+      setComments(getData(commentsRes, "comments"));
+
     } catch (error) {
-      console.error("Failed to load data:", error);
+      console.error("Critical error loading dashboard data:", error);
+      toast({ title: "Error loading dashboard", description: "Partial data may be missing. Check console.", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -655,6 +698,218 @@ const AdminDashboard = () => {
     </div>
   );
 
+  // ─── Events CRUD ─────────────────────────────────────────────────────────────
+  const openNewEvent = () => {
+    setEventForm({ ...emptyEventForm });
+    setEditingEventId(null);
+    setEventFormOpen(true);
+  };
+
+  const openEditEvent = (ev: any) => {
+    setEventForm({
+      title: ev.title || "",
+      description: ev.description || "",
+      event_date: ev.event_date || "",
+      event_time: ev.event_time || "",
+      location: ev.location || "",
+      image_url: ev.image_url || "",
+      is_published: ev.is_published || false,
+    });
+    setEditingEventId(ev.id);
+    setEventFormOpen(true);
+  };
+
+  const handleSaveEvent = async () => {
+    if (!eventForm.title || !eventForm.event_date) {
+      toast({ title: "Title and date are required", variant: "destructive" });
+      return;
+    }
+    setEventSaving(true);
+    try {
+      const payload: any = {
+        title: eventForm.title,
+        description: eventForm.description || null,
+        event_date: eventForm.event_date,
+        event_time: eventForm.event_time || null,
+        location: eventForm.location || null,
+        image_url: eventForm.image_url || null,
+        is_published: eventForm.is_published,
+      };
+      if (editingEventId) {
+        await eventsApi.update(editingEventId, payload);
+        toast({ title: "Event updated!" });
+      } else {
+        await eventsApi.create(payload);
+        toast({ title: "Event created!" });
+      }
+      setEventFormOpen(false);
+      await loadAllData();
+    } catch (err: any) {
+      toast({ title: "Error saving event", description: err.message, variant: "destructive" });
+    } finally {
+      setEventSaving(false);
+    }
+  };
+
+  const handleDeleteEvent = async (id: string) => {
+    if (!confirm("Delete this event?")) return;
+    try {
+      await eventsApi.delete(id);
+      toast({ title: "Event deleted" });
+      await loadAllData();
+    } catch (err: any) {
+      toast({ title: "Error deleting event", description: err.message, variant: "destructive" });
+    }
+  };
+
+  // ─── Events Section ──────────────────────────────────────────────────────────
+  const renderEventsSection = () => (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Upcoming Events</h2>
+        <Button onClick={openNewEvent} className="rounded-xl gap-2">
+          <Plus className="h-4 w-4" /> New Event
+        </Button>
+      </div>
+
+      <Card className="border-border shadow-card">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border">
+                  {["Title", "Date", "Time", "Location", "Published"].map((col) => (
+                    <th key={col} className="text-left py-3 px-4 text-xs font-semibold uppercase text-muted-foreground tracking-wider">
+                      {col}
+                    </th>
+                  ))}
+                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase text-muted-foreground tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {events.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="py-8 text-center text-muted-foreground">
+                      No events yet. Create your first event!
+                    </td>
+                  </tr>
+                ) : (
+                  events.map((ev) => (
+                    <tr key={ev.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                      <td className="py-3 px-4 text-sm font-medium">{ev.title}</td>
+                      <td className="py-3 px-4 text-sm">{ev.event_date}</td>
+                      <td className="py-3 px-4 text-sm">{ev.event_time || "-"}</td>
+                      <td className="py-3 px-4 text-sm max-w-[180px] truncate">{ev.location || "-"}</td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${ev.is_published ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
+                          }`}>
+                          {ev.is_published ? "Published" : "Draft"}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-1">
+                          <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10" onClick={() => openEditEvent(ev)}>
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm" className="text-destructive hover:bg-destructive/10" onClick={() => handleDeleteEvent(ev.id)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const handleApproveComment = async (id: string) => {
+    try {
+      const { data } = await commentsApi.approve(id);
+      setComments(comments.map(c => c.id === id ? { ...c, approved: true } : c));
+      toast({ title: "Comment approved" });
+    } catch (error) {
+      toast({ title: "Error approving comment", variant: "destructive" });
+    }
+  };
+
+  const handleDeleteComment = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this comment?")) return;
+    try {
+      await commentsApi.delete(id);
+      setComments(comments.filter(c => c.id !== id));
+      toast({ title: "Comment deleted" });
+    } catch (error) {
+      toast({ title: "Error deleting comment", variant: "destructive" });
+    }
+  };
+
+  const renderCommentsSection = () => (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold">Blog Comments</h2>
+      <Card className="border-border shadow-card">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border">
+                  {["Name", "Post Slug", "Comment", "Date", "Status", "Actions"].map((col) => (
+                    <th key={col} className="text-left py-3 px-4 text-xs font-semibold uppercase text-muted-foreground tracking-wider">
+                      {col}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {comments.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="py-8 text-center text-muted-foreground">
+                      No comments found.
+                    </td>
+                  </tr>
+                ) : (
+                  comments.map((comment) => (
+                    <tr key={comment.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                      <td className="py-3 px-4 font-medium">{comment.name}</td>
+                      <td className="py-3 px-4 text-xs text-muted-foreground font-mono">{comment.post_slug}</td>
+                      <td className="py-3 px-4 max-w-xs truncate" title={comment.comment}>
+                        {comment.comment}
+                      </td>
+                      <td className="py-3 px-4 text-sm text-muted-foreground">
+                        {new Date(comment.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-0.5 rounded text-xs font-bold ${comment.approved ? "bg-primary/10 text-primary" : "bg-warm/10 text-warm"}`}>
+                          {comment.approved ? "Approved" : "Pending"}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          {!comment.approved && (
+                            <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 h-8 w-8 p-0" onClick={() => handleApproveComment(comment.id)} title="Approve">
+                              <CheckCircle className="h-4 w-4" />
+                            </Button>
+                          )}
+                          <Button variant="ghost" size="sm" className="text-destructive hover:bg-destructive/10 h-8 w-8 p-0" onClick={() => handleDeleteComment(comment.id)} title="Delete">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
   const renderSection = () => {
     if (loading) {
       return (
@@ -668,6 +923,8 @@ const AdminDashboard = () => {
       case "overview": return renderOverview();
       case "blog": return renderBlogSection();
       case "services": return renderServicesSection();
+      case "events": return renderEventsSection();
+      case "comments": return renderCommentsSection();
       case "consultations":
         return renderTable("Consultation Requests", ["Name", "Care Type", "Urgency", "Status", "Date"], consultations, ["full_name", "care_type", "urgency", "status", "created_at"]);
       case "contacts":
@@ -688,7 +945,7 @@ const AdminDashboard = () => {
     appointments.filter((a) => a.status === "New").length;
 
   return (
-    <div className="min-h-screen bg-muted flex">
+    <div className="flex h-screen bg-muted/20 text-foreground font-sans overflow-hidden">
       {/* View Dialog */}
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
         {renderDetailDialog()}
@@ -926,117 +1183,196 @@ const AdminDashboard = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Event Form Dialog */}
+      <Dialog open={eventFormOpen} onOpenChange={setEventFormOpen}>
+        <DialogContent className="max-w-xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editingEventId ? "Edit Event" : "New Event"}</DialogTitle>
+            <DialogDescription>Fill in the event details below.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-2">
+            <div>
+              <label className="text-sm font-medium mb-1 block">Event Title *</label>
+              <Input
+                value={eventForm.title}
+                onChange={(e) => setEventForm((f) => ({ ...f, title: e.target.value }))}
+                placeholder="e.g. Free Home Health Assessment Day"
+                className="rounded-xl"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium mb-1 block">Date *</label>
+                <Input
+                  type="date"
+                  value={eventForm.event_date}
+                  onChange={(e) => setEventForm((f) => ({ ...f, event_date: e.target.value }))}
+                  className="rounded-xl"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">Time</label>
+                <Input
+                  value={eventForm.event_time}
+                  onChange={(e) => setEventForm((f) => ({ ...f, event_time: e.target.value }))}
+                  placeholder="e.g. 10:00 AM - 4:00 PM"
+                  className="rounded-xl"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Location</label>
+              <Input
+                value={eventForm.location}
+                onChange={(e) => setEventForm((f) => ({ ...f, location: e.target.value }))}
+                placeholder="e.g. 1434 W 76th St, Chicago, IL"
+                className="rounded-xl"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Image URL</label>
+              <Input
+                value={eventForm.image_url}
+                onChange={(e) => setEventForm((f) => ({ ...f, image_url: e.target.value }))}
+                placeholder="https://..."
+                className="rounded-xl"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Description</label>
+              <Textarea
+                value={eventForm.description}
+                onChange={(e) => setEventForm((f) => ({ ...f, description: e.target.value }))}
+                placeholder="Describe this event..."
+                className="rounded-xl resize-none"
+                rows={3}
+              />
+            </div>
+            <div className="flex items-center gap-3 pt-1">
+              <input
+                type="checkbox"
+                id="event-published"
+                checked={eventForm.is_published}
+                onChange={(e) => setEventForm((f) => ({ ...f, is_published: e.target.checked }))}
+                className="w-4 h-4 rounded"
+              />
+              <label htmlFor="event-published" className="text-sm font-medium cursor-pointer">
+                Publish this event (visible on website)
+              </label>
+            </div>
+            <div className="flex justify-end gap-3 border-t border-border pt-4">
+              <Button variant="outline" onClick={() => setEventFormOpen(false)} className="rounded-xl">
+                Cancel
+              </Button>
+              <Button onClick={handleSaveEvent} disabled={eventSaving} className="rounded-xl">
+                {eventSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                {editingEventId ? "Update Event" : "Create Event"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Sidebar */}
       <aside
-        className={`fixed lg:sticky top-0 left-0 z-40 h-screen bg-secondary text-secondary-foreground transition-all duration-300 ${sidebarOpen ? "w-64" : "w-0 lg:w-16"
-          } overflow-hidden`}
+        className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"} transform transition-transform duration-300 lg:translate-x-0 fixed lg:sticky top-0 left-0 z-40 h-full w-[280px] bg-secondary border-r border-secondary/20 flex flex-col shrink-0 shadow-2xl lg:shadow-none`}
       >
-        <div className="flex items-center justify-between p-4 border-b border-secondary-foreground/10">
-          {sidebarOpen && (
-            <Link to="/" className="flex items-center gap-2">
-              <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="24" cy="24" r="23" stroke="hsl(174, 100%, 40%)" strokeWidth="2" fill="none" />
-                <path d="M24 14C24 14 19.5 17.5 19.5 22C19.5 24.8 21 27 23 28.2V32H25V28.2C27 27 28.5 24.8 28.5 22C28.5 17.5 24 14 24 14Z" fill="hsl(174, 100%, 40%)" />
-                <circle cx="24" cy="21" r="2.5" fill="white" />
-              </svg>
-              <span className="text-sm font-bold">
-                MIDWAY<span className="text-warm">HEALTH</span>
-                <span className="font-normal text-xs ml-0.5 text-secondary-foreground/70">Inc.</span>
-              </span>
-            </Link>
-          )}
+        <div className="p-6 border-b border-secondary-foreground/10 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-secondary font-bold text-xl shadow-sm">
+              M
+            </div>
+            <h1 className="font-display font-bold text-xl tracking-tight text-secondary-foreground">Midway Admin</h1>
+          </div>
           <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-1.5 rounded-lg hover:bg-secondary-foreground/10 transition-colors lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden p-2 text-secondary-foreground/70 hover:text-white transition-colors"
           >
-            <X className="h-5 w-5" />
+            <X className="h-6 w-6" />
           </button>
         </div>
 
-        <nav className="p-3 space-y-1">
-          {sidebarItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                setActiveSection(item.id);
-                if (window.innerWidth < 1024) setSidebarOpen(false);
-              }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${activeSection === item.id
-                ? "bg-warm/20 text-warm"
-                : "text-secondary-foreground/70 hover:bg-secondary-foreground/10 hover:text-secondary-foreground"
-                }`}
-            >
-              <item.icon className="h-5 w-5 shrink-0" />
-              {sidebarOpen && <span>{item.label}</span>}
-            </button>
-          ))}
+        <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+          {sidebarItems.map((item) => {
+            const isActive = activeSection === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveSection(item.id);
+                  if (window.innerWidth < 1024) setSidebarOpen(false);
+                }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
+                  ? "bg-white text-secondary shadow-md font-bold"
+                  : "text-secondary-foreground/80 hover:bg-white/10 hover:text-white"
+                  }`}
+              >
+                <item.icon className={`h-5 w-5 ${isActive ? "text-secondary" : "text-secondary-foreground/80 group-hover:text-white"}`} />
+                <span className="text-sm">{item.label}</span>
+                {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-secondary shadow-sm" />}
+              </button>
+            );
+          })}
         </nav>
 
-        {sidebarOpen && (
-          <div className="absolute bottom-4 left-4 right-4 space-y-2">
-            <Link to="/">
-              <Button variant="ghost" className="w-full text-secondary-foreground hover:bg-secondary-foreground/10 rounded-xl text-sm">
-                ← Back to Website
-              </Button>
-            </Link>
-            <Button
-              variant="ghost"
-              onClick={handleSignOut}
-              className="w-full text-destructive hover:bg-destructive/10 rounded-xl text-sm gap-2"
-            >
-              <LogOut className="h-4 w-4" /> Sign Out
-            </Button>
-          </div>
-        )}
+        <div className="p-4 border-t border-secondary-foreground/10">
+          <Link to="/" className="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary-foreground/70 hover:bg-white/10 hover:text-white transition-colors mb-2">
+            <LogOut className="h-5 w-5" />
+            <span className="text-sm font-medium">Back to Website</span>
+          </Link>
+          <button
+            onClick={handleSignOut}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:bg-destructive/20 hover:text-white transition-colors"
+          >
+            <LogOut className="h-5 w-5" />
+            <span className="text-sm font-bold">Sign Out</span>
+          </button>
+        </div>
       </aside>
 
-      {/* Backdrop on mobile */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-foreground/40 z-30 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative w-full">
+        {/* Mobile Sidebar Overlay */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-30 lg:hidden backdrop-blur-sm"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
 
-      {/* Main */}
-      <div className="flex-1 min-w-0">
-        {/* Top bar */}
-        <header className="sticky top-0 z-20 bg-background border-b border-border px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
+        {/* Header */}
+        <header className="h-[72px] border-b border-border bg-background/80 backdrop-blur-md px-4 sm:px-8 flex items-center justify-between shrink-0 z-20 sticky top-0">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 rounded-lg hover:bg-muted transition-colors"
+              className="lg:hidden text-muted-foreground hover:text-foreground -ml-2"
             >
-              <Menu className="h-5 w-5 text-foreground" />
-            </button>
-            <h1 className="text-xl font-bold text-foreground capitalize">
-              {activeSection === "overview" ? "Dashboard" : sidebarItems.find((i) => i.id === activeSection)?.label}
-            </h1>
+              <Menu className="h-6 w-6" />
+            </Button>
+            <h2 className="text-lg sm:text-xl font-bold font-display tracking-tight text-foreground truncate">
+              {sidebarItems.find((i) => i.id === activeSection)?.label}
+            </h2>
           </div>
-          <div className="flex items-center gap-3">
-            <button
-              className="relative p-2 rounded-lg hover:bg-muted transition-colors"
-              onClick={() => setActiveSection("consultations")}
-              title="View new notifications"
-            >
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Button variant="ghost" size="icon" className="rounded-full relative">
               <Bell className="h-5 w-5 text-muted-foreground" />
-              {newNotifications > 0 && (
-                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-warm rounded-full" />
-              )}
-            </button>
-            <button
-              onClick={handleSignOut}
-              className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm hover:bg-primary/90 transition-colors"
-              title="Sign out"
-            >
+              <span className="absolute top-2 right-2 w-2 h-2 bg-destructive rounded-full border-2 border-background" />
+            </Button>
+            <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shadow-sm border border-primary/20">
               A
-            </button>
+            </div>
           </div>
         </header>
 
-        {/* Content */}
-        <main className="p-6">{renderSection()}</main>
-      </div>
+        {/* Scrollable Content Area */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 relative scroll-smooth">
+          <div className="max-w-[1600px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
+            {renderSection()}
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

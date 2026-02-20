@@ -1,14 +1,11 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
 Allow: /
+
+# Block admin routes from search engines
+Disallow: /mwh-secure-portal-2026
+Disallow: /mwh-dashboard-2026
+
+# Block utility/legal pages from indexing (optional)
+Disallow: /consent-form
+
+Sitemap: https://midwayhealthinc.com/sitemap.xml

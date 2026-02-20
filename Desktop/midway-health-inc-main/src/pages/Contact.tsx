@@ -14,9 +14,11 @@ const Contact = () => {
   useSEO("Contact Us | Midway Health Inc.", "Get in touch with Midway Health Inc. for home healthcare services in Chicago. Call (312) 298-9124 or fill out our contact form.");
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [honeypot, setHoneypot] = useState(""); // Spam protection
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (honeypot) return; // Silent rejection for bots
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
@@ -103,6 +105,16 @@ const Contact = () => {
             {/* Contact Form */}
             <div className="lg:col-span-3">
               <form onSubmit={handleSubmit} className="bg-card rounded-2xl shadow-card border border-border p-8 space-y-5">
+                {/* Honeypot field - invisible to humans */}
+                <input
+                  type="text"
+                  name="website"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  style={{ display: "none" }}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label className="text-sm font-medium text-foreground mb-1.5 block">Full Name</label>

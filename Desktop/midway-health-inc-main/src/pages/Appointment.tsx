@@ -88,6 +88,7 @@ const Appointment = () => {
     const { toast } = useToast();
     const [submitted, setSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [honeypot, setHoneypot] = useState(""); // Spam protection
 
     const form = useForm<AppointmentFormData>({
         resolver: zodResolver(appointmentSchema),
@@ -103,6 +104,7 @@ const Appointment = () => {
     });
 
     const onSubmit = async (data: AppointmentFormData) => {
+        if (honeypot) return; // Silent rejection for bots
         try {
             setIsSubmitting(true);
 
@@ -418,6 +420,16 @@ const Appointment = () => {
 
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                            {/* Honeypot field - invisible to humans */}
+                            <input
+                                type="text"
+                                name="website"
+                                value={honeypot}
+                                onChange={(e) => setHoneypot(e.target.value)}
+                                style={{ display: "none" }}
+                                tabIndex={-1}
+                                autoComplete="off"
+                            />
                             {/* Personal Information */}
                             <div className="bg-card rounded-2xl shadow-card border border-border p-8">
                                 <h3 className="font-display text-xl font-bold text-foreground mb-6 flex items-center gap-2">

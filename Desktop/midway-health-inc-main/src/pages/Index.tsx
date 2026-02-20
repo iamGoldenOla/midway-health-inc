@@ -11,6 +11,7 @@ import CTASection from "@/components/home/CTASection";
 import InspirationalMarquee from "@/components/shared/InspirationalMarquee";
 import HealthTalkVideo from "@/components/home/HealthTalkVideo";
 import FeedbackRatings from "@/components/home/FeedbackRatings";
+import UpcomingEvents from "@/components/home/UpcomingEvents";
 import useSEO from "@/hooks/useSEO";
 
 const Index = () => {
@@ -30,6 +31,7 @@ const Index = () => {
       <Testimonials />
       <TeamMembers />
       <BlogPreview />
+      <UpcomingEvents />
       <AppointmentBanner />
       <CTASection />
     </Layout>

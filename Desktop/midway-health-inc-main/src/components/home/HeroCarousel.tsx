@@ -83,6 +83,7 @@ const HeroCarousel = () => {
             src={slides[current].image}
             alt="Healthcare"
             className="w-full h-full object-cover object-top"
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
         </motion.div>

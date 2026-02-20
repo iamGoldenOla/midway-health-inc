@@ -27,7 +27,7 @@ const milestones = [
   { year: "2013", title: "100 Patients Served", desc: "Reached our first major milestone in patient care." },
   { year: "2017", title: "Expanded Services", desc: "Added physical therapy, occupational therapy, and speech therapy programs." },
   { year: "2021", title: "Community Award", desc: "Recognized for outstanding community healthcare service." },
-  { year: "2026", title: "5,000+ Patients", desc: "Serving thousands of families with 200+ care professionals." },
+  { year: "2026", title: "150K+ Patients", desc: "Serving thousands of families with 200+ care professionals." },
 ];
 
 const EVENT_DATE = new Date("2026-04-18T09:00:00");
@@ -87,7 +87,7 @@ const About = () => {
 
               <div className="flex flex-wrap gap-8 sm:gap-12">
                 {[
-                  { value: 150, label: "Patients Served", suffix: "+" },
+                  { value: 150, label: "Patients Served", suffix: "K+" },
                   { value: 5, label: "Years Experience", suffix: "+" },
                   { value: 98, label: "Satisfaction Rate", suffix: "%" },
                 ].map((stat) => (
@@ -189,7 +189,7 @@ const About = () => {
             <div className="flex justify-center gap-6 sm:gap-10 md:gap-16 flex-wrap px-4">
               {[
                 { value: 5, label: "Years Experience", suffix: "+" },
-                { value: 150, label: "Patients Served", suffix: "+" },
+                { value: 150, label: "Patients Served", suffix: "K+" },
                 { value: 10, label: "Care Professionals", suffix: "+" },
                 { value: 98, label: "Satisfaction Rate", suffix: "%" },
               ].map((s) => (

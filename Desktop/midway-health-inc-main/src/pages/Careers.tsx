@@ -15,6 +15,7 @@ import parallaxImg from "@/assets/midway_6.jpg";
 const openPositions = [
   { title: "Registered Nurse (RN)", type: "Full-Time", location: "Field / Home Visits", description: "Provide skilled nursing care to patients in their homes, including assessments, wound care, medication management, and patient education." },
   { title: "Certified Home Health Aide (CHHA)", type: "Full-Time / Part-Time", location: "Field / Home Visits", description: "Assist patients with daily living activities, personal care, and basic health monitoring under the supervision of a nurse." },
+  { title: "Certified Nursing Assistant (CNA)", type: "Full-Time / Part-Time", location: "Field / Home Visits", description: "Provide compassionate patient care, assisting with daily living activities and monitoring patient well-being under the guidance of the nursing team." },
   { title: "Physical Therapist (PT)", type: "Full-Time", location: "Field / Home Visits", description: "Evaluate and treat patients to help restore movement, manage pain, and prevent disability through individualized home-based therapy." },
   { title: "Occupational Therapist (OT)", type: "Part-Time", location: "Field / Home Visits", description: "Help patients develop, recover, and improve skills needed for daily living and working through therapeutic activities." },
   { title: "Speech-Language Pathologist", type: "Per Diem", location: "Field / Home Visits", description: "Evaluate and treat patients with speech, language, cognitive, and swallowing disorders in a home setting." },
@@ -160,39 +161,68 @@ const Careers = () => {
       <InspirationalMarquee />
 
       {/* Open Positions */}
-      <section className="py-20 lg:py-28 bg-muted">
+      <section className="py-24 lg:py-32 bg-gradient-to-br from-primary/5 via-background to-warm/5 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-20 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10" />
+        <div className="absolute bottom-20 right-0 w-96 h-96 bg-warm/5 rounded-full blur-3xl -z-10" />
+
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14">
-            <span className="text-warm text-sm font-semibold tracking-wider uppercase">Open Positions</span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mt-3">Current Opportunities</h2>
+          <div className="text-center mb-16 max-w-2xl mx-auto">
+            <span className="inline-block py-1 px-3 rounded-full bg-warm/10 text-warm text-sm font-semibold tracking-wider uppercase mb-4 border border-warm/20">
+              Open Positions
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
+              Current <span className="text-primary">Opportunities</span>
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Find the role that fits your passion. We are always looking for dedicated professionals to join our growing family.
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
             {openPositions.map((job) => (
-              <div key={job.title} className="bg-card rounded-2xl border border-border p-6 shadow-card hover:shadow-elevated transition-shadow">
-                <div className="flex items-start justify-between mb-3">
-                  <h3 className="font-display text-lg font-bold text-foreground">{job.title}</h3>
-                  <Briefcase className="h-5 w-5 text-warm shrink-0" />
+              <div
+                key={job.title}
+                className="group relative bg-card rounded-2xl p-8 border border-border/50 shadow-card hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden"
+              >
+                {/* Accent Border */}
+                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-primary to-warm opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                <div className="flex flex-col h-full">
+                  <div className="flex items-start justify-between mb-6">
+                    <div>
+                      <h3 className="font-display text-2xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                        {job.title}
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
+                          <Clock className="h-3.5 w-3.5" /> {job.type}
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-muted px-3 py-1 rounded-full border border-border">
+                          <MapPin className="h-3.5 w-3.5" /> {job.location}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors shrink-0">
+                      <Briefcase className="h-5 w-5" />
+                    </div>
+                  </div>
+
+                  <p className="text-muted-foreground leading-relaxed mb-6 flex-grow border-t border-border/50 pt-6">
+                    {job.description}
+                  </p>
+
+                  <Button
+                    className="w-full bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 rounded-xl font-semibold h-11"
+                    onClick={() => {
+                      setSelectedJob(job.title);
+                      document.getElementById("application-form")?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                  >
+                    Apply for this Position
+                    <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Button>
                 </div>
-                <div className="flex flex-wrap gap-3 mb-3">
-                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                    <Clock className="h-3 w-3" /> {job.type}
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                    <MapPin className="h-3 w-3" /> {job.location}
-                  </span>
-                </div>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4">{job.description}</p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="rounded-xl border-warm text-warm hover:bg-warm hover:text-warm-foreground"
-                  onClick={() => {
-                    setSelectedJob(job.title);
-                    document.getElementById("application-form")?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                >
-                  Apply Now
-                </Button>
               </div>
             ))}
           </div>

@@ -12,15 +12,7 @@ const Footer = () => {
           {/* Brand */}
           <div>
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <svg width="40" height="40" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="24" cy="24" r="23" stroke="hsl(174, 100%, 40%)" strokeWidth="2" fill="none" />
-                <path d="M24 14C24 14 19.5 17.5 19.5 22C19.5 24.8 21 27 23 28.2V32H25V28.2C27 27 28.5 24.8 28.5 22C28.5 17.5 24 14 24 14Z" fill="hsl(174, 100%, 40%)" />
-                <circle cx="24" cy="21" r="2.5" fill="white" />
-              </svg>
-              <span className="font-display text-xl font-bold">
-                MIDWAY<span className="text-warm">HEALTH</span>
-                <span className="font-normal text-sm ml-0.5 text-secondary-foreground/70">Inc.</span>
-              </span>
+              <img src="/src/assets/MIDWAY_LOGO_LIGHT.png" alt="Midway Health Inc." className="h-16 w-auto object-contain" />
             </Link>
             <p className="text-secondary-foreground/70 text-sm leading-relaxed">
               Delivering compassionate, high-quality home healthcare services to help you and your loved ones thrive.

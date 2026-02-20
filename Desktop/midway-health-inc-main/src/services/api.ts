@@ -485,3 +485,135 @@ export const authApi = {
         return user;
     },
 };
+
+// =====================================================
+// EVENTS
+// =====================================================
+
+export const eventsApi = {
+    // Get all published events (public)
+    async getPublished() {
+        const { data, error } = await supabase
+            .from('events')
+            .select('*')
+            .eq('is_published', true)
+            .gte('event_date', new Date().toISOString().split('T')[0])
+            .order('event_date', { ascending: true });
+
+        if (error) throw error;
+        return data;
+    },
+
+    // Get all events (admin)
+    async getAll() {
+        const { data, error } = await supabase
+            .from('events')
+            .select('*')
+            .order('event_date', { ascending: true });
+
+        if (error) throw error;
+        return data;
+    },
+
+    // Create event (admin)
+    async create(event: import('@/types/database.types').Database['public']['Tables']['events']['Insert']) {
+        const { data, error } = await supabase
+            .from('events')
+            .insert([event])
+            .select()
+            .single();
+
+        if (error) throw error;
+        return data;
+    },
+
+    // Update event (admin)
+    async update(id: string, updates: import('@/types/database.types').Database['public']['Tables']['events']['Update']) {
+        const { data, error } = await supabase
+            .from('events')
+            .update({ ...updates, updated_at: new Date().toISOString() })
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) throw error;
+        return data;
+    },
+
+    // Delete event (admin)
+    async delete(id: string) {
+        const { error } = await supabase
+            .from('events')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+    },
+};
+
+// =====================================================
+// BLOG COMMENTS
+// =====================================================
+
+export const commentsApi = {
+    // Get approved comments for a post (public)
+    async getBySlug(slug: string) {
+        const { data, error } = await supabase
+            .from('blog_comments')
+            .select('*')
+            .eq('post_slug', slug)
+            .eq('approved', true)
+            .order('created_at', { ascending: true });
+
+        if (error) throw error;
+        return data;
+    },
+
+    // Get all comments (admin — includes unapproved)
+    async getAll() {
+        const { data, error } = await supabase
+            .from('blog_comments')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        return data;
+    },
+
+    // Submit a new comment (public — starts as unapproved)
+    async create(comment: { post_slug: string; name: string; email?: string; comment: string }) {
+        const { data, error } = await supabase
+            .from('blog_comments')
+            .insert([{ ...comment, approved: false }])
+            .select()
+            .single();
+
+        if (error) throw error;
+        return data;
+    },
+
+    // Approve a comment (admin)
+    async approve(id: string) {
+        const { data, error } = await supabase
+            .from('blog_comments')
+            .update({ approved: true })
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) throw error;
+        return data;
+    },
+
+    // Delete a comment (admin)
+    async delete(id: string) {
+        const { error } = await supabase
+            .from('blog_comments')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+    },
+};
+
+

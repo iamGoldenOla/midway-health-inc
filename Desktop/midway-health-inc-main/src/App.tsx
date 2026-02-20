@@ -19,7 +19,9 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ConsentForm from "./pages/ConsentForm";
+import Events from "./pages/Events";
 import NotFound from "./pages/NotFound";
+import CookieConsent from "@/components/shared/CookieConsent";
 
 const queryClient = new QueryClient();
 
@@ -55,8 +57,10 @@ const App = () => (
 
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/consent-form" element={<ConsentForm />} />
+          <Route path="/events" element={<Events />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <CookieConsent />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

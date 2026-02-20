@@ -171,4 +171,9 @@
     -webkit-overflow-scrolling: touch;
     touch-action: pan-x pan-y;
   }
+
+  .mask-gradient-right {
+    mask-image: linear-gradient(to right, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  }
 }
