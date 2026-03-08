@@ -1,0 +1,222 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+:root {
+    --background: 216 30% 98%;
+    --foreground: 220 30% 12%;
+
+    --card: 216 25% 99%;
+    --card-foreground: 220 30% 12%;
+
+    --popover: 216 25% 99%;
+    --popover-foreground: 220 30% 12%;
+
+    /* Navy Blue primary */
+    --primary: 220 60% 22%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 216 20% 95%;
+    --secondary-foreground: 220 30% 12%;
+
+    --muted: 216 18% 95%;
+    --muted-foreground: 220 10% 45%;
+
+    --accent: 220 60% 22%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 216 18% 90%;
+    --input: 216 18% 90%;
+    --ring: 220 60% 22%;
+
+    --radius: 0.5rem;
+
+    /* Brand colors */
+    --royal-blue: 220 60% 22%;
+    --royal-blue-dark: 220 65% 15%;
+    --royal-blue-light: 220 55% 32%;
+    --navy: 220 65% 12%;
+    --light-gray: 216 20% 96%;
+    --text-dark: 220 30% 12%;
+    --text-muted: 220 10% 45%;
+    
+    /* Gold accent */
+    --coral: 42 85% 55%;
+    --coral-light: 42 85% 65%;
+    --coral-dark: 42 90% 42%;
+
+    /* Teal highlight */
+    --teal: 175 60% 42%;
+    --teal-light: 175 55% 55%;
+    --teal-dark: 175 65% 32%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(220 60% 22%) 0%, hsl(220 65% 12%) 100%);
+    --gradient-cta: linear-gradient(90deg, hsl(220 60% 22%) 0%, hsl(175 60% 42%) 100%);
+
+    /* Shadows */
+    --shadow-card: 0 4px 20px -2px hsl(220 60% 22% / 0.08);
+    --shadow-hover: 0 8px 30px -4px hsl(220 60% 22% / 0.15);
+    --shadow-lg: 0 10px 40px -10px hsl(220 30% 12% / 0.12);
+    --shadow-coral: 0 4px 20px -2px hsl(42 85% 55% / 0.3);
+
+    --sidebar-background: 216 25% 97%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 220 60% 22%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 216 20% 95%;
+    --sidebar-accent-foreground: 220 30% 12%;
+    --sidebar-border: 216 18% 90%;
+    --sidebar-ring: 220 60% 22%;
+  }
+
+  .dark {
+    --background: 220 25% 10%;
+    --foreground: 216 20% 95%;
+
+    --card: 220 25% 11%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 220 25% 11%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 220 55% 35%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 20% 18%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 220 15% 18%;
+    --muted-foreground: 220 10% 65%;
+
+    --accent: 220 55% 35%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 220 55% 35%;
+
+    --sidebar-background: 220 30% 8%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 220 55% 35%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 20% 18%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 220 55% 35%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-16 md:py-24 px-4 md:px-8;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-hover hover:-translate-y-1;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground px-6 py-3 rounded-md font-medium transition-all duration-300 hover:bg-primary/90 hover:shadow-lg;
+  }
+
+.btn-outline {
+    @apply border-2 border-primary text-primary px-6 py-3 rounded-md font-medium transition-all duration-300 hover:bg-primary hover:text-primary-foreground;
+  }
+
+  .btn-coral {
+    @apply bg-coral text-foreground px-6 py-3 rounded-md font-medium transition-all duration-300 hover:bg-coral/90 hover:shadow-coral;
+  }
+}
+
+@layer utilities {
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  .animate-blink {
+    animation: blink 1s step-end infinite;
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.6s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .animate-marquee {
+    animation: marquee 20s linear infinite;
+  }
+
+  @keyframes kenburns {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.08) translate(-1%, -1%); }
+    100% { transform: scale(1) translate(0, 0); }
+  }
+}
