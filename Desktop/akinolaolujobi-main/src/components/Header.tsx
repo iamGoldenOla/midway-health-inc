@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import TopBar from '@/components/shared/TopBar';
-import brandLogo from '@/assets/akinolaolujobi_logo.png';
+import brandLogo from '@/assets/AKINOLA_OLUJOBI_MC_LOGO.jpeg';
 
 const serviceSubItems = [
   { label: 'I Speak', href: '/services/i-speak' },

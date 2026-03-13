@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Youtube, Linkedin, Twitter } from 'lucide-react';
 import NewsletterSignup from './shared/NewsletterSignup';
-import brandLogo from '@/assets/akinolaolujobi_logo.png';
+import brandLogo from '@/assets/AKINOLA_OLUJOBI_MC_LOGO.jpeg';
 
 const quickLinks = [
   { label: 'Home', href: '/' },
